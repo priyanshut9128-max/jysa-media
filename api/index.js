@@ -53,8 +53,19 @@ module.exports = async (req, res) => {
   // If an external backend URL is specified (e.g. Render/Railway), reverse-proxy to it
   if (process.env.BACKEND_URL) {
     try {
-      const backendBase = process.env.BACKEND_URL.replace(/\/+$/, "");
-      const targetUrl = `${backendBase}${req.url.startsWith("/") ? req.url : "/" + req.url}`;
+      const baseParsed = new URL(process.env.BACKEND_URL);
+      if (baseParsed.protocol !== "http:" && baseParsed.protocol !== "https:") {
+        throw new Error("Invalid protocol for BACKEND_URL");
+      }
+
+      // Safe URL resolution preventing SSRF and path manipulation
+      const cleanPath = req.url.startsWith("/") ? req.url : "/" + req.url;
+      const backendBasePath = baseParsed.pathname.replace(/\/+$/, "");
+      const targetUrl = new URL(backendBasePath + cleanPath, baseParsed.origin);
+
+      if (targetUrl.origin !== baseParsed.origin) {
+        throw new Error("Destination origin mismatch");
+      }
 
       const headers = { ...req.headers };
       delete headers.host;
@@ -67,7 +78,7 @@ module.exports = async (req, res) => {
         }
       }
 
-      const response = await fetch(targetUrl, {
+      const response = await fetch(targetUrl.toString(), {
         method: req.method,
         headers,
         body: body && body.length > 0 ? body : undefined,
@@ -81,7 +92,10 @@ module.exports = async (req, res) => {
       const data = await response.text();
       return sendResponse(res, response.status, responseHeaders, data);
     } catch (proxyError) {
-      console.error("[Vercel Reverse Proxy Error]", proxyError.message);
+      const safeError = typeof proxyError.message === "string"
+        ? proxyError.message.replace(/([a-zA-Z0-9_\-\.\:\/]{30,})/g, "[REDACTED]")
+        : "Proxy error";
+      console.error("[Vercel Reverse Proxy Error]", safeError);
       return sendResponse(
         res,
         502,

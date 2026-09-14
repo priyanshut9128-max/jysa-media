@@ -11,6 +11,8 @@ const revealItems = document.querySelectorAll(".reveal");
 const tiltItems = document.querySelectorAll(".case-card, .team-card");
 const contactForm = document.querySelector("#contactForm");
 const formNote = document.querySelector("#formNote");
+const pageInitTime = Date.now();
+if (contactForm) contactForm.dataset.mountTime = String(pageInitTime);
 
 /* ---------------------------------------------------------
    API configuration
@@ -77,6 +79,9 @@ async function submitForm(form, noteEl, source, btn) {
     return;
   }
 
+  const mountTime = Number(form.dataset.mountTime || pageInitTime);
+  const elapsedMs = Math.max(0, Date.now() - mountTime);
+
   const payload = {
     name: rawName,
     phone: rawPhone,
@@ -85,6 +90,7 @@ async function submitForm(form, noteEl, source, btn) {
     message: rawMessage,
     formSource: source,
     _hp_check: hpCheck,
+    _ts_check: String(elapsedMs),
   };
 
   // Disable button and show loading state
@@ -891,6 +897,8 @@ function ensureTalkModal() {
 
 function openTalkModal() {
   const modal = ensureTalkModal();
+  const form = modal.querySelector("#talkModalForm");
+  if (form) form.dataset.mountTime = String(Date.now());
   modal.classList.add("is-open");
   modal.setAttribute("aria-hidden", "false");
   document.body.classList.add("talk-modal-open");

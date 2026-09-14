@@ -24,8 +24,12 @@ app.disable("x-powered-by");
    Middleware
    --------------------------------------------------------- */
 
-// Secure HTTP headers
-app.use(helmet());
+// Secure HTTP headers with explicit clickjacking frameguard
+app.use(
+  helmet({
+    frameguard: { action: "deny" },
+  })
+);
 
 // CORS — allow requests only from verified frontend origins
 const allowedOrigins = [
@@ -35,6 +39,8 @@ const allowedOrigins = [
   "http://127.0.0.1:8000",
   "http://localhost:3000",
   "http://127.0.0.1:3000",
+  "http://localhost:3001",
+  "http://127.0.0.1:3001",
   "https://jysamedia.in",
   "https://www.jysamedia.in",
 ];
@@ -47,14 +53,17 @@ if (process.env.FRONTEND_ORIGIN) {
   allowedOrigins.push(...customOrigins);
 }
 
+// Restrict Vercel preview URLs specifically to JYSA Media project deployments
+const jysaPreviewRegex = /^https:\/\/jysa-media(-[a-zA-Z0-9-]+)?\.vercel\.app$/;
+
 app.use(
   cors({
     origin(origin, callback) {
-      // Allow server-to-server or tools with no origin (curl/Postman), allowed origins, and Vercel deployments
+      // Allow server-to-server or tools with no origin (curl/Postman), allowed origins, and JYSA Media preview deployments
       if (
         !origin ||
         allowedOrigins.includes(origin) ||
-        /^https:\/\/[a-zA-Z0-9-]+\.vercel\.app$/.test(origin)
+        jysaPreviewRegex.test(origin)
       ) {
         return callback(null, true);
       }
@@ -89,6 +98,11 @@ app.use("/api", (_req, res) => {
   res.status(404).json({ success: false, error: "Endpoint not found" });
 });
 
+// Global fallback for any other unmatched routes (prevents Express HTML leakage)
+app.use((_req, res) => {
+  res.status(404).json({ success: false, error: "Endpoint not found" });
+});
+
 /* ---------------------------------------------------------
    Global error handler
    --------------------------------------------------------- */
@@ -118,8 +132,11 @@ app.use((err, _req, res, _next) => {
     });
   }
 
-  // Server error without sensitive details or stack trace leakage
-  console.error("[Server Error]", err.message || "Unknown error");
+  // Server error without sensitive details, credentials or stack trace leakage
+  const safeMessage = typeof err.message === "string"
+    ? err.message.replace(/([a-zA-Z0-9_\-\.\:\/]{30,})/g, "[REDACTED]")
+    : "Unknown error";
+  console.error("[Server Error]", safeMessage);
   res.status(500).json({ success: false, error: "Internal server error" });
 });
 
