@@ -85,9 +85,17 @@ async function submitForm(form, noteEl, source, btn) {
 
   // Prevent duplicate clicks & show immediate Sending state
   form.dataset.submitting = "true";
-  const originalLabel = btn.textContent;
+  const originalHtml = btn.innerHTML;
   btn.disabled = true;
-  btn.textContent = "Sending…";
+
+  // Lock dimensions to prevent any layout shift during state changes
+  const initialHeight = btn.offsetHeight;
+  if (initialHeight > 0) {
+    btn.style.minHeight = `${initialHeight}px`;
+  }
+
+  // Smooth transition to Sending state inside button
+  btn.innerHTML = '<span class="button-state-wrap is-entering"><span class="button-state-text">Sending…</span></span>';
   noteEl.textContent = "";
   noteEl.style.color = "";
 
@@ -105,6 +113,8 @@ async function submitForm(form, noteEl, source, btn) {
     _ts_check: String(elapsedMs),
   };
 
+  let isSuccess = false;
+
   try {
     const response = await fetch(`${API_BASE}/api/contact`, {
       method: "POST",
@@ -115,9 +125,59 @@ async function submitForm(form, noteEl, source, btn) {
     const result = await response.json();
 
     if (response.ok && result.success) {
-      noteEl.style.color = "#4caf50";
-      noteEl.textContent = result.message || "Message sent successfully!";
+      isSuccess = true;
       form.reset();
+      noteEl.textContent = "";
+
+      // Smooth transition out of Sending state and into Success state inside the button
+      const currentWrap = btn.querySelector(".button-state-wrap");
+      if (currentWrap) {
+        currentWrap.classList.add("is-leaving");
+      }
+
+      setTimeout(() => {
+        btn.innerHTML = `
+          <span class="button-state-wrap is-entering" aria-live="polite">
+            <svg class="button-success-icon" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 8.5L6.5 12L13 4.5"/>
+            </svg>
+            <span class="button-state-text">Message Sent</span>
+          </span>
+        `.trim();
+      }, currentWrap ? 140 : 0);
+
+      // Clean restoration after 4.5s or on next user input interaction
+      let resetTimer = setTimeout(restoreToNormal, 4500);
+
+      function restoreToNormal() {
+        if (resetTimer) {
+          clearTimeout(resetTimer);
+          resetTimer = null;
+        }
+        form.removeEventListener("input", onFormInput);
+
+        const successWrap = btn.querySelector(".button-state-wrap");
+        if (successWrap) {
+          successWrap.classList.add("is-leaving");
+          setTimeout(() => {
+            btn.innerHTML = originalHtml;
+            btn.disabled = false;
+            btn.style.minHeight = "";
+            form.dataset.submitting = "false";
+          }, 140);
+        } else {
+          btn.innerHTML = originalHtml;
+          btn.disabled = false;
+          btn.style.minHeight = "";
+          form.dataset.submitting = "false";
+        }
+      }
+
+      function onFormInput() {
+        restoreToNormal();
+      }
+
+      form.addEventListener("input", onFormInput, { once: true });
     } else {
       // Show validation errors or generic error safely
       noteEl.style.color = "#ff5252";
@@ -127,14 +187,25 @@ async function submitForm(form, noteEl, source, btn) {
       } else {
         noteEl.textContent = result.error || "Something went wrong. Please try again.";
       }
+      btn.innerHTML = originalHtml;
+      btn.disabled = false;
+      btn.style.minHeight = "";
+      form.dataset.submitting = "false";
     }
   } catch (_networkError) {
     noteEl.style.color = "#ff5252";
     noteEl.textContent = "Network error — please check your connection and try again.";
-  } finally {
-    form.dataset.submitting = "false";
+    btn.innerHTML = originalHtml;
     btn.disabled = false;
-    btn.textContent = originalLabel;
+    btn.style.minHeight = "";
+    form.dataset.submitting = "false";
+  } finally {
+    if (!isSuccess) {
+      form.dataset.submitting = "false";
+      btn.disabled = false;
+      btn.innerHTML = originalHtml;
+      btn.style.minHeight = "";
+    }
   }
 }
 

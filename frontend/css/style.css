@@ -1232,6 +1232,102 @@ button {
   border: 0;
   background: var(--red);
   color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+
+.button-submit:disabled,
+.talk-modal-form button[type="submit"]:disabled {
+  cursor: default;
+  transform: none !important;
+}
+
+/* Button-level Micro-Animation States */
+.button-state-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  line-height: 1;
+  transition: opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1), transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+
+.button-state-wrap.is-leaving {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+.button-state-wrap.is-entering {
+  animation: btnStateEnter 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.button-state-text {
+  display: inline-block;
+  line-height: 1;
+}
+
+.button-success-icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  vertical-align: middle;
+  animation: btnCheckPop 0.36s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.button-success-icon path {
+  stroke-dasharray: 22;
+  stroke-dashoffset: 22;
+  animation: btnCheckDraw 0.32s cubic-bezier(0.16, 1, 0.3, 1) 0.06s forwards;
+}
+
+@keyframes btnStateEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes btnCheckPop {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  65% {
+    transform: scale(1.18);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes btnCheckDraw {
+  0% {
+    stroke-dashoffset: 22;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button-state-wrap,
+  .button-state-wrap.is-entering,
+  .button-success-icon,
+  .button-success-icon path {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    stroke-dashoffset: 0 !important;
+    opacity: 1 !important;
+  }
 }
 
 .form-note {
