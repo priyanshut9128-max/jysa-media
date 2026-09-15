@@ -1,6 +1,9 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <!-- =========================================
+       PAGE DOCUMENT / HEAD METADATA
+  ========================================= -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#e31324">
@@ -29,6 +32,7 @@
   <meta name="twitter:image" content="https://jysamedia.in/assets/og-image.jpg">
   <meta name="twitter:image:alt" content="JYSA Media — Digital Marketing Agency">
 
+  <!-- Typography & Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -36,12 +40,17 @@
     rel="stylesheet"
   >
 
+  <!-- Global Stylesheet -->
   <link rel="stylesheet" href="css/style.css?v=31">
 </head>
 
 <body>
+  <!-- Ambient background grain texture -->
   <div class="grain" aria-hidden="true"></div>
 
+  <!-- =========================================
+       SITE HEADER & NAVIGATION
+  ========================================= -->
   <header class="site-header" id="siteHeader">
     <a class="brand" href="#home" aria-label="JYSA Media home">
       <span class="brand-name">JYSA</span>
@@ -72,8 +81,13 @@
     </button>
   </header>
 
-
+  <!-- =========================================
+       MAIN CONTENT
+  ========================================= -->
   <main>
+    <!-- -----------------------------------------
+         HERO SECTION (#home)
+    ----------------------------------------- -->
     <section class="hero" id="home">
       <div class="hero-copy reveal">
         <p class="eyebrow"><span class="dot"></span>DIGITAL MARKETING AGENCY</p>
@@ -168,6 +182,9 @@
       </div>
     </section>
 
+    <!-- -----------------------------------------
+         ABOUT SECTION (#about)
+    ----------------------------------------- -->
     <section class="section section-white" id="about">
       <div class="about-grid">
         <div class="reveal">
@@ -199,12 +216,17 @@
             <a class="cube-face cube-top" href="pages/services/social-media.html">SOCIAL</a>
             <a class="cube-face cube-bottom" href="pages/services/performance-marketing.html">GROW</a>
           </div>
+        </div>
       </div>
+
       <div class="section-transition-line" aria-hidden="true">
         <span></span>
       </div>
     </section>
 
+    <!-- -----------------------------------------
+         SERVICES SECTION (#services)
+    ----------------------------------------- -->
     <section class="section section-soft" id="services">
       <div class="section-heading reveal">
         <div>
@@ -324,11 +346,15 @@
           </a>
         </div>
       </div>
+
       <div class="section-transition-line" aria-hidden="true">
         <span></span>
       </div>
     </section>
 
+    <!-- -----------------------------------------
+         OUR WORK SECTION (#work)
+    ----------------------------------------- -->
     <section class="section section-red" id="work">
       <div class="section-heading section-heading-light reveal">
         <div>
@@ -374,11 +400,15 @@
           <a href="#contact">VIEW CASE STUDY →</a>
         </article>
       </div>
+
       <div class="section-transition-line" aria-hidden="true">
         <span></span>
       </div>
     </section>
 
+    <!-- -----------------------------------------
+         CAREERS SECTION (#careers)
+    ----------------------------------------- -->
     <section class="section section-red careers" id="careers">
       <div class="reveal">
         <p class="eyebrow"><span class="dot dot-white"></span>CAREERS</p>
@@ -407,11 +437,15 @@
           <small>MEDIA</small>
         </div>
       </div>
+
       <div class="section-transition-line" aria-hidden="true">
         <span></span>
       </div>
     </section>
 
+    <!-- -----------------------------------------
+         CONTACT SECTION (#contact)
+    ----------------------------------------- -->
     <section class="section section-red contact" id="contact">
       <div class="reveal">
         <p class="eyebrow"><span class="dot dot-white"></span>CONTACT US</p>
@@ -454,12 +488,16 @@
         <button class="button button-submit" type="submit">SEND MESSAGE →</button>
         <p class="form-note" id="formNote"></p>
       </form>
+
       <div class="section-transition-line" aria-hidden="true">
         <span></span>
       </div>
     </section>
   </main>
 
+  <!-- =========================================
+       SITE FOOTER
+  ========================================= -->
   <footer class="site-footer">
     <a class="brand" href="#home" aria-label="JYSA Media home">
       <span class="brand-name">JYSA</span>
@@ -477,6 +515,9 @@
     <span>© 2026 JYSA Media House Pvt. Ltd.</span>
   </footer>
 
+  <!-- =========================================
+       "LET'S TALK" MODAL POPUP DIALOG
+  ========================================= -->
   <div class="talk-modal" id="talkModal" aria-hidden="true">
     <div class="talk-modal-backdrop" data-talk-close></div>
     <div class="talk-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="talkModalTitle">
@@ -503,6 +544,9 @@
     </div>
   </div>
 
+  <!-- =========================================
+       SCRIPTS
+  ========================================= -->
   <script src="js/main.js?v=31"></script>
 </body>
 </html>
