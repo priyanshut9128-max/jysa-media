@@ -1,93 +1,135 @@
-# JYSA Media — Full Source (Deploy Ready)
+# JYSA Media — Full Source (Production Deploy Ready)
 
-The homepage remains the summary landing page. Existing red + white styling and the 3D cube are preserved.
+A modern, high-performance digital marketing agency website built with vanilla HTML/CSS/JavaScript and an Express.js / Vercel Serverless contact API with GoDaddy/Titan SMTP email delivery.
 
-## Project Structure
+---
+
+## 1. Project Architecture
 
 ```
-project/
-├── frontend/               ← All website files
-│   ├── index.html           Landing page
+jysa-media/
+├── frontend/                   ← Complete Static Website
+│   ├── index.html              Homepage (Hero, 3D Cube, Services Stack, Work, Contact, Let's Talk)
 │   ├── css/
-│   │   ├── style.css        Landing page styles
-│   │   ├── pages.css        Shared inner-page styles
-│   │   └── service.css      Service page styles
+│   │   ├── style.css           Homepage styles & responsive design
+│   │   ├── pages.css           Sub-pages styles (About, Services, Work, Careers, Contact)
+│   │   └── service.css         Detailed service page styles
 │   ├── js/
-│   │   └── main.js          Landing interactions + form API integration
-│   ├── pages/               Dedicated top-level pages
-│   ├── services/            Service detail pages (homepage card links)
-│   └── assets/              Images and media
+│   │   └── main.js             All client interactions, 3D animations & form submission
+│   ├── pages/                  Dedicated top-level sub-pages
+│   │   ├── about.html          About JYSA Media
+│   │   ├── services.html       Services Overview (7 core services)
+│   │   ├── work.html           Portfolio & Case Studies
+│   │   ├── careers.html        Careers & Open Positions
+│   │   ├── contact.html        Contact Page
+│   │   └── services/           6 sub-pages linked from the 3D Cube
+│   │       ├── website-design.html
+│   │       ├── digital-strategy.html
+│   │       ├── paid-advertising.html
+│   │       ├── seo.html
+│   │       ├── social-media.html
+│   │       └── performance-marketing.html
+│   ├── services/               10 rich service detail pages (linked from homepage cards)
+│   │   ├── branding-creative.html
+│   │   ├── content-marketing.html
+│   │   ├── digital-strategy.html
+│   │   ├── influencer-marketing.html
+│   │   ├── paid-advertising.html
+│   │   ├── performance-marketing.html
+│   │   ├── seo.html
+│   │   ├── social-media.html
+│   │   ├── website-design.html
+│   │   └── website-seo.html
+│   └── assets/                 Optimized images, case studies & brand logos
 │
-├── backend/                 ← Node.js API server
-│   ├── server.js            Express entry point
+├── backend/                    ← Node.js / Express API Server
+│   ├── server.js               Express entry point, Helmet, CORS, body parser & timeouts
 │   ├── routes/
-│   │   └── contact.js       POST /api/contact route + rate limiter
+│   │   └── contact.js          POST /api/contact route + IP rate limiter + content-type check
 │   ├── controllers/
-│   │   └── contactController.js   Validation + orchestration
+│   │   └── contactController.js Schema validation, bot checks, debouncing & dispatch
 │   ├── services/
-│   │   └── emailService.js  Nodemailer SMTP (GoDaddy / Titan)
-│   ├── package.json
-│   └── .env.example         Environment variable template
+│   │   └── emailService.js     Nodemailer SMTP pooling (GoDaddy / Titan) & email templates
+│   ├── package.json            Backend dependencies
+│   └── .env.example            Environment template (SMTP credentials)
 │
-├── .gitignore
-└── README.md
+├── api/
+│   └── index.js                Vercel Serverless Function entry point & reverse proxy
+│
+├── vercel.json                 Vercel routing, outputDirectory & CSP/Security headers
+├── package.json                Root workspace scripts & dependencies
+├── .gitignore                  Excludes node_modules, .env, and OS artifacts
+└── README.md                   Developer documentation
 ```
 
-## Main navigation
+---
 
-ABOUT US → `pages/about.html`
-SERVICES → `pages/services.html`
-OUR WORK → `pages/work.html`
-CAREERS → `pages/careers.html`
-CONTACT US → `pages/contact.html`
+## 2. Navigation Architecture
 
-All links open in the same browser tab.
+### Primary Navigation (Header & Footer)
+- **ABOUT US** &rarr; `pages/about.html`
+- **SERVICES** &rarr; `pages/services.html`
+- **OUR WORK** &rarr; `pages/work.html`
+- **CAREERS** &rarr; `pages/careers.html`
+- **CONTACT US** &rarr; `pages/contact.html` (or `#contact` on homepage)
+- **LET'S TALK** &rarr; Opens the dynamic `#talkModal` popup dialog from any page
 
-## 3D cube
+### 3D Interactive Cube (Homepage About Section)
+- **JYSA** &rarr; `pages/services/website-design.html`
+- **MEDIA** &rarr; `pages/services/digital-strategy.html`
+- **ADS** &rarr; `pages/services/paid-advertising.html`
+- **SEO** &rarr; `pages/services/seo.html`
+- **SOCIAL** &rarr; `pages/services/social-media.html`
+- **GROW** &rarr; `pages/services/performance-marketing.html`
 
-The existing cube remains in the About section and every face is clickable:
+### Services 3D Stacked Card Deck (Homepage Services Section)
+- Links directly to the rich service detail pages in `services/*.html`.
 
-JYSA → `pages/services/website-design.html`
-MEDIA → `pages/services/digital-strategy.html`
-ADS → `pages/services/paid-advertising.html`
-SEO → `pages/services/seo.html`
-SOCIAL → `pages/services/social-media.html`
-GROW → `pages/services/performance-marketing.html`
+---
 
-## Contact Forms
+## 3. Contact Form & Button Micro-Animation
 
-Both website contact forms (LET'S TALK popup + homepage Contact Us) are connected to the backend API.
+Both website contact forms (**LET'S TALK popup** and **Homepage Contact Us**) connect to `POST /api/contact`.
 
-**Submission flow:**
-1. User fills in the form and clicks submit
-2. Frontend sends `POST /api/contact` to the backend
-3. Backend validates the data
-4. Backend sends an email via GoDaddy Professional Email SMTP
-5. Email is delivered to the configured business inbox
+### Submission Lifecycle
+1. **User clicks Submit**:
+   - Button is immediately disabled (`btn.disabled = true; form.dataset.submitting = "true"`).
+   - Duplicate clicks are rejected instantly.
+   - Button bounding box height is locked (`minHeight`) to guarantee **zero layout shift**.
+   - Button content smoothly transitions to `"Sending…"`.
+2. **Backend Processing**:
+   - Rate limit (5 requests per IP / 15 min) and Content-Type (`application/json`) verified.
+   - Schema enforcement, honeypot (`_hp_check`), and bot timing (`_ts_check`) validated.
+   - Input sanitization & CRLF injection defense applied.
+   - Duplicate hash debouncing checked (60-second window).
+   - Concurrent SMTP email dispatch via pooled Nodemailer transporter:
+     - **Email 1**: Enquiry notification sent to business inbox (`hello@jysamedia.in`).
+     - **Email 2**: Automatic confirmation receipt sent to the visitor.
+   - Responds with HTTP 200 `{ "success": true }`.
+3. **Frontend Success Feedback**:
+   - Form fields reset (`form.reset()`).
+   - Triggered **only** on genuine HTTP 200 success acknowledgement.
+   - Smoothly transforms inner button into an animated SVG checkmark + `"Message Sent"` (~350ms ease-out curve).
+   - Strictly self-contained inside the button (no separate success cards or toasts).
+   - Automatically returns to normal after 4.5 seconds or as soon as the user starts typing in the form again.
+4. **Error Recovery**:
+   - On validation error or network drop, the button immediately restores its original label (`SEND MESSAGE →` or `SEND →`) and is re-enabled.
+   - Success animation never triggers on errors.
 
-**Email format:**
-- Subject: `New Website Enquiry — JYSA Media`
-- Reply-To: the submitted email address
-- Includes: Name, Mobile, Email, Company, Message, Form Source
+---
 
-## Backend Setup
+## 4. Local Development & Setup
 
-### 1. Install dependencies
+### Prerequisites
+- Node.js (v18+)
+- npm
 
+### 1. Configure Environment Variables
 ```bash
-cd backend
-npm install
+cp backend/.env.example backend/.env
 ```
-
-### 2. Configure environment variables
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env` and fill in your GoDaddy Professional Email credentials:
-
-```
+Fill in your SMTP credentials in `backend/.env`:
+```env
 SMTP_HOST=smtpout.secureserver.net
 SMTP_PORT=465
 SMTP_USER=hello@jysamedia.in
@@ -96,45 +138,34 @@ CONTACT_RECEIVER=hello@jysamedia.in
 PORT=3001
 ```
 
-### 3. Start the backend
-
+### 2. Start the Backend API
 ```bash
-npm start
+npm run dev
+# or
+cd backend && npm start
 ```
+The API runs on `http://localhost:3001`.
 
-The API will run on `http://localhost:3001`.
-
-### 4. Serve the frontend
-
+### 3. Serve the Frontend
 From the project root:
-
 ```bash
-cd frontend
-python3 -m http.server 8000
+npx serve frontend -l 8080
+# or
+python3 -m http.server 8080 --directory frontend
 ```
+Visit `http://localhost:8080` in your browser. Client-side JS automatically routes API calls to `http://localhost:3001` when running locally.
 
-Open `http://localhost:8000` (or `http://localhost:8080`) in your browser.
+---
 
-## Security & Hardening Controls
+## 5. Security Architecture
 
-- **SMTP Credentials**: Server-side only, stored in `.env` (excluded from git via `.gitignore`).
-- **Dependency Audit**: Clean bill of health with 0 vulnerabilities (`nodemailer` upgraded, `qs` override applied).
-- **Strict Server-Side Validation**: Validates name (max 100 chars), mobile format (7-20 digits), email format (max 254 chars), company (max 120 chars), and message (max 3000 chars).
-- **CRLF Injection Defense**: Strict rejection of `\r` and `\n` in email headers and single-line form fields.
-- **Email HTML Escaping**: Context-aware HTML escaping on all dynamic data injected into email templates to prevent HTML/XSS injection in mail clients.
-- **Anti-Spam Honeypot**: Hidden honeypot field (`_hp_check`) silently intercepts automated bots without consuming SMTP quota.
-- **Rate Limiting**: 10 submissions per IP per 15 minutes with `trust proxy` enabled for accurate client IP resolution behind reverse proxies.
-- **CORS Protection**: Whitelisted origins only (`localhost:8080`, `localhost:8000`, `localhost:3001`, `jysamedia.in`).
-- **Secure HTTP Headers**: Helmet enabled on backend; production CSP, HSTS, X-Frame-Options (DENY), nosniff, and Permissions-Policy configured in `vercel.json`.
-- **Request Limits & Error Handling**: 10 KB request body size limit; standard HTTP 413, 400, and 404 responses without stack trace or server information leakage.
-- **Client-Side Form Validation**: Instant client feedback and pattern constraints (`maxlength`, `pattern`, `autocomplete`).
+- **SMTP Credential Protection**: All credentials stay strictly on the server, excluded via `.gitignore`.
+- **Strict Schema Enforcement**: Rejects any payloads containing unexpected or malformed properties.
+- **CRLF & Header Injection Defense**: Complete neutralization of `\r` and `\n` in email headers and text inputs.
+- **Context-Aware HTML Escaping**: All dynamic inputs in email templates are escaped to prevent mail client HTML/XSS injection.
+- **Honeypot & Timing Bot Defense**: Silent bot rejection via hidden honeypot (`_hp_check`) and minimum timing check (`_ts_check`).
+- **IP Rate Limiting**: 5 submissions per IP per 15 minutes with proxy-aware IP resolution (`trust proxy: 1`).
+- **CORS Protection**: Restricted to verified JYSA Media origins and production domains (`jysamedia.in`, `localhost:8080`, `localhost:8000`, `localhost:3001`).
+- **Security Headers (Helmet & Vercel)**: CSP, HSTS (`max-age=63072000`), X-Frame-Options (`DENY`), nosniff, and Permissions-Policy configured.
+- **Request Body Limit**: 10 KB limit to prevent resource exhaustion. Standard HTTP 413, 400, and 405 error responses.
 
-## Service Card Navigation
-
-- Existing homepage service cards are full-card same-tab links
-- Dedicated pages for all 7 homepage service categories
-- Homepage service card visual styling is preserved
-- Service pages reuse the existing JYSA red/white styling
-- Contact email: hello@jysamedia.in
-
-- Social Media dedicated page uses user-supplied Instagram, Facebook, and Google Ads logo assets for the orbit.

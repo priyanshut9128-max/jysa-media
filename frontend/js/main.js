@@ -1,230 +1,106 @@
-/* =========================================================
-   JYSA Media — interactions
-   Keep behavior in one readable module.
-   ========================================================= */
+/* ==========================================================================
+   JYSA MEDIA — MAIN FRONTEND SCRIPT (main.js)
+   
+   Architecture Overview:
+   1. Configuration & Runtime Environment
+   2. Header & Navigation (Desktop Sticky + Mobile Drawer)
+   3. Scroll Reveal & Section Transition Lines
+   4. 3D Interactive Cube (About Us Section)
+   5. Services 3D Stacked Card Deck (Desktop & Mobile/Tablet)
+   6. Case Study & Team Cards Tilt Interaction
+   7. "Let's Talk" Modal Dialog (Lifecycle & Global Interceptor)
+   8. Contact Form Submission & Button Micro-Animation
+   ========================================================================== */
+
+/* ==========================================================================
+   1. CONFIGURATION & RUNTIME ENVIRONMENT
+   ========================================================================== */
+
+/**
+ * Resolves the backend API base URL:
+ * - In local development (localhost / 127.0.0.1): routes to backend port 3001
+ * - In production (jysamedia.in): uses same-origin relative path (/api/*)
+ */
+const API_BASE =
+  window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    ? "http://localhost:3001"
+    : "";
+
+/** Page initialization timestamp for bot timing checks */
+const pageInitTime = Date.now();
+
+/* ==========================================================================
+   2. HEADER & NAVIGATION (Desktop Sticky + Mobile Drawer)
+   ========================================================================== */
 
 const header = document.querySelector("#siteHeader");
 const nav = document.querySelector("#siteNav");
 const menuToggle = document.querySelector(".menu-toggle");
 const navLinks = [...document.querySelectorAll(".site-nav a")];
-const revealItems = document.querySelectorAll(".reveal");
-const tiltItems = document.querySelectorAll(".case-card, .team-card");
-const contactForm = document.querySelector("#contactForm");
-const formNote = document.querySelector("#formNote");
-const pageInitTime = Date.now();
-if (contactForm) contactForm.dataset.mountTime = String(pageInitTime);
-
-/* ---------------------------------------------------------
-   API configuration
-   --------------------------------------------------------- */
-
-const API_BASE =
-  window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
-    ? "http://localhost:3001"
-    : ""; // same-origin in production
 
 /**
- * Shared form submission helper.
- * Posts form data to the backend contact API and manages UI feedback.
- *
- * @param {HTMLFormElement} form
- * @param {HTMLElement}     noteEl   — the element to show success/error text
- * @param {string}          source   — 'LET\'S TALK POPUP' or 'CONTACT US'
- * @param {HTMLButtonElement} btn     — the submit button
+ * Toggles header backdrop blur & shadow based on scroll offset.
  */
-async function submitForm(form, noteEl, source, btn) {
-  if (form.dataset.submitting === "true" || btn.disabled) {
-    return;
-  }
-
-  const formData = new FormData(form);
-
-  const rawName = String(formData.get("name") || "").trim();
-  const rawPhone = String(formData.get("phone") || "").trim();
-  const rawEmail = String(formData.get("email") || "").trim();
-  const rawCompany = String(formData.get("company") || "").trim();
-  const rawMessage = String(formData.get("message") || "").trim();
-  const hpCheck = String(formData.get("_hp_check") || "").trim();
-
-  // Client-side quick validation before dispatching network call
-  if (!rawName) {
-    noteEl.style.color = "#ff5252";
-    noteEl.textContent = "Please enter your name.";
-    form.querySelector('[name="name"]')?.focus();
-    return;
-  }
-
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!rawEmail || !emailPattern.test(rawEmail) || rawEmail.length > 254) {
-    noteEl.style.color = "#ff5252";
-    noteEl.textContent = "Please enter a valid email address.";
-    form.querySelector('[name="email"]')?.focus();
-    return;
-  }
-
-  const phoneDigits = rawPhone.replace(/\D/g, "");
-  const phonePattern = /^[+]?[0-9\s\-()]{7,20}$/;
-  if (!rawPhone || !phonePattern.test(rawPhone) || phoneDigits.length < 7 || rawPhone.length > 20) {
-    noteEl.style.color = "#ff5252";
-    noteEl.textContent = "Please enter a valid mobile number (7–20 digits).";
-    form.querySelector('[name="phone"]')?.focus();
-    return;
-  }
-
-  if (rawCompany.length > 120) {
-    noteEl.style.color = "#ff5252";
-    noteEl.textContent = "Company name cannot exceed 120 characters.";
-    return;
-  }
-
-  if (rawMessage.length > 3000) {
-    noteEl.style.color = "#ff5252";
-    noteEl.textContent = "Message cannot exceed 3000 characters.";
-    return;
-  }
-
-  // Prevent duplicate clicks & show immediate Sending state
-  form.dataset.submitting = "true";
-  const originalHtml = btn.innerHTML;
-  btn.disabled = true;
-
-  // Lock dimensions to prevent any layout shift during state changes
-  const initialHeight = btn.offsetHeight;
-  if (initialHeight > 0) {
-    btn.style.minHeight = `${initialHeight}px`;
-  }
-
-  // Smooth transition to Sending state inside button
-  btn.innerHTML = '<span class="button-state-wrap is-entering"><span class="button-state-text">Sending…</span></span>';
-  noteEl.textContent = "";
-  noteEl.style.color = "";
-
-  const mountTime = Number(form.dataset.mountTime || pageInitTime);
-  const elapsedMs = Math.max(0, Date.now() - mountTime);
-
-  const payload = {
-    name: rawName,
-    phone: rawPhone,
-    email: rawEmail,
-    company: rawCompany,
-    message: rawMessage,
-    formSource: source,
-    _hp_check: hpCheck,
-    _ts_check: String(elapsedMs),
-  };
-
-  let isSuccess = false;
-
-  try {
-    const response = await fetch(`${API_BASE}/api/contact`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    const result = await response.json();
-
-    if (response.ok && result.success) {
-      isSuccess = true;
-      form.reset();
-      noteEl.textContent = "";
-
-      // Smooth transition out of Sending state and into Success state inside the button
-      const currentWrap = btn.querySelector(".button-state-wrap");
-      if (currentWrap) {
-        currentWrap.classList.add("is-leaving");
-      }
-
-      setTimeout(() => {
-        btn.innerHTML = `
-          <span class="button-state-wrap is-entering" aria-live="polite">
-            <svg class="button-success-icon" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M3 8.5L6.5 12L13 4.5"/>
-            </svg>
-            <span class="button-state-text">Message Sent</span>
-          </span>
-        `.trim();
-      }, currentWrap ? 140 : 0);
-
-      // Clean restoration after 4.5s or on next user input interaction
-      let resetTimer = setTimeout(restoreToNormal, 4500);
-
-      function restoreToNormal() {
-        if (resetTimer) {
-          clearTimeout(resetTimer);
-          resetTimer = null;
-        }
-        form.removeEventListener("input", onFormInput);
-
-        const successWrap = btn.querySelector(".button-state-wrap");
-        if (successWrap) {
-          successWrap.classList.add("is-leaving");
-          setTimeout(() => {
-            btn.innerHTML = originalHtml;
-            btn.disabled = false;
-            btn.style.minHeight = "";
-            form.dataset.submitting = "false";
-          }, 140);
-        } else {
-          btn.innerHTML = originalHtml;
-          btn.disabled = false;
-          btn.style.minHeight = "";
-          form.dataset.submitting = "false";
-        }
-      }
-
-      function onFormInput() {
-        restoreToNormal();
-      }
-
-      form.addEventListener("input", onFormInput, { once: true });
-    } else {
-      // Show validation errors or generic error safely
-      noteEl.style.color = "#ff5252";
-      if (result.errors) {
-        const messages = Object.values(result.errors);
-        noteEl.textContent = messages.join(" ");
-      } else {
-        noteEl.textContent = result.error || "Something went wrong. Please try again.";
-      }
-      btn.innerHTML = originalHtml;
-      btn.disabled = false;
-      btn.style.minHeight = "";
-      form.dataset.submitting = "false";
-    }
-  } catch (_networkError) {
-    noteEl.style.color = "#ff5252";
-    noteEl.textContent = "Network error — please check your connection and try again.";
-    btn.innerHTML = originalHtml;
-    btn.disabled = false;
-    btn.style.minHeight = "";
-    form.dataset.submitting = "false";
-  } finally {
-    if (!isSuccess) {
-      form.dataset.submitting = "false";
-      btn.disabled = false;
-      btn.innerHTML = originalHtml;
-      btn.style.minHeight = "";
-    }
-  }
-}
-
-/* ---------------------------------------------------------
-   Header + active navigation
-   --------------------------------------------------------- */
-
 function updateHeader() {
   header?.classList.toggle("is-scrolled", window.scrollY > 20);
-
 }
 
 window.addEventListener("scroll", updateHeader, { passive: true });
 updateHeader();
 
-/* ---------------------------------------------------------
-   Homepage section-transition animation
-   --------------------------------------------------------- */
+/**
+ * Closes the mobile navigation drawer and updates aria attributes.
+ */
+function closeMenu() {
+  nav?.classList.remove("is-open");
+  menuToggle?.setAttribute("aria-expanded", "false");
+}
 
+menuToggle?.addEventListener("click", () => {
+  const isOpen = nav.classList.toggle("is-open");
+  menuToggle.setAttribute("aria-expanded", String(isOpen));
+});
+
+navLinks.forEach((link) => {
+  link.addEventListener("click", closeMenu);
+});
+
+nav?.querySelector(".nav-talk-cta")?.addEventListener("click", closeMenu);
+
+window.addEventListener("resize", () => {
+  if (window.innerWidth > 760) {
+    closeMenu();
+  }
+});
+
+/* ==========================================================================
+   3. SCROLL REVEAL & SECTION TRANSITIONS
+   ========================================================================== */
+
+/**
+ * Scroll Reveal: Adds .is-visible class when elements enter viewport.
+ */
+const revealItems = document.querySelectorAll(".reveal");
+
+const revealObserver = new IntersectionObserver(
+  (entries, observer) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) {
+        return;
+      }
+      entry.target.classList.add("is-visible");
+      observer.unobserve(entry.target);
+    });
+  },
+  { threshold: 0.12 }
+);
+
+revealItems.forEach((item) => revealObserver.observe(item));
+
+/**
+ * Section Transition Lines: Calculates scroll depth between homepage sections
+ * to smoothly expand and fade the divider lines.
+ */
 const transitionSections = [
   ...document.querySelectorAll("main > .section:not(.hero)")
 ];
@@ -234,7 +110,6 @@ function updateSectionTransitionAnimation() {
 
   transitionSections.forEach((section) => {
     const line = section.querySelector(".section-transition-line");
-
     if (!line) {
       return;
     }
@@ -258,7 +133,6 @@ window.addEventListener(
     if (sectionTransitionFrame) {
       return;
     }
-
     sectionTransitionFrame = requestAnimationFrame(() => {
       updateSectionTransitionAnimation();
       sectionTransitionFrame = 0;
@@ -270,9 +144,9 @@ window.addEventListener(
 window.addEventListener("resize", updateSectionTransitionAnimation);
 updateSectionTransitionAnimation();
 
-/* ---------------------------------------------------------
-   3D cube — continuous rotation + direct mouse response
-   --------------------------------------------------------- */
+/* ==========================================================================
+   4. 3D INTERACTIVE CUBE (ABOUT US SECTION)
+   ========================================================================== */
 
 const cube = document.querySelector(".cube");
 
@@ -285,11 +159,13 @@ if (cube) {
   let lastPointerX = null;
   let lastPointerY = null;
 
+  /**
+   * Continuous auto-rotation animation loop.
+   */
   function renderCube(now) {
     const deltaSeconds = Math.min((now - lastFrame) / 1000, 0.05);
     lastFrame = now;
 
-    // Keep the automatic motion running continuously.
     rotationX += 9 * deltaSeconds;
     rotationY += 14 * deltaSeconds;
     rotationZ += 2 * deltaSeconds;
@@ -304,6 +180,7 @@ if (cube) {
     requestAnimationFrame(renderCube);
   }
 
+  // Interactive mouse drag to rotate the cube
   if (supportsFinePointer) {
     const scene = cube.closest(".about-scene");
 
@@ -317,7 +194,6 @@ if (cube) {
       const deltaX = event.clientX - lastPointerX;
       const deltaY = event.clientY - lastPointerY;
 
-      // Translate real cursor movement into visible cube rotation.
       rotationY += deltaX * 0.45;
       rotationX -= deltaY * 0.45;
 
@@ -334,9 +210,9 @@ if (cube) {
   requestAnimationFrame(renderCube);
 }
 
-/* ---------------------------------------------------------
-   Services — stable interactive stacked card deck
-   --------------------------------------------------------- */
+/* ==========================================================================
+   5. SERVICES 3D STACKED CARD DECK
+   ========================================================================== */
 
 const servicesStack = document.querySelector("[data-services-stack]");
 
@@ -358,6 +234,10 @@ if (servicesStack) {
 
   const AUTO_HOLD_MS = 3800; // 2.6s reading hold + 1.2s smooth transition
 
+  /**
+   * Responsive slot definitions mapping stack positions (-4 to +4)
+   * to 3D transforms, rotation angles, z-depth, and opacity.
+   */
   function getSlotDefinitions() {
     const width = window.innerWidth;
 
@@ -513,9 +393,9 @@ if (servicesStack) {
     const isDesktop = window.innerWidth > 1100;
 
     if (isDesktop) {
-      // ========================================================
-      // DESKTOP: EXACT APPROVED SYSTEM — 100% UNTOUCHED
-      // ========================================================
+      // --------------------------------------------------
+      // DESKTOP: Smooth ghost clone system for wraparound
+      // --------------------------------------------------
       stackCards.forEach((card, i) => {
         const oldSlot = getSlotForCard(i, oldActive);
         const newSlot = getSlotForCard(i, normalizedNext);
@@ -579,9 +459,9 @@ if (servicesStack) {
       return;
     }
 
-    // ========================================================
-    // MOBILE / TABLET DEDICATED SEAMLESS TRANSITION SYSTEM
-    // ========================================================
+    // --------------------------------------------------
+    // MOBILE / TABLET: Seamless rear glide system
+    // --------------------------------------------------
     stackCards.forEach((card, i) => {
       const oldSlot = getSlotForCard(i, oldActive);
       const newSlot = getSlotForCard(i, normalizedNext);
@@ -590,10 +470,6 @@ if (servicesStack) {
       if (!isWrap) {
         applySlotStyles(card, slots[newSlot], false);
       } else {
-        // Wrapping card (e.g. Slot -3 -> Slot 3 on forward cycle, or Slot 3 -> Slot -3 on reverse cycle):
-        // It glides smoothly behind the opaque central card stack directly into its destination slot.
-        // Keeping zIndex: 20 and deep zDepth (-36px) guarantees it travels behind all stack cards
-        // without popping, clipping, transform resets, or altering the DOM structure.
         card.style.transition = "";
         card.style.zIndex = "20";
         card.style.opacity = "1";
@@ -610,8 +486,6 @@ if (servicesStack) {
 
     activeServiceIndex = normalizedNext;
 
-    // Gentle settle: when the 1200ms transition finishes, smoothly restore standard slot
-    // zDepth and zIndex on all cards. Never resets transition, never causes opacity flicker.
     transitionCleanupTimer = window.setTimeout(() => {
       if (activeServiceIndex === normalizedNext) {
         const currentSlots = getSlotDefinitions();
@@ -630,7 +504,7 @@ if (servicesStack) {
     }, 1210);
   }
 
-  // Automatic slow cycling
+  // Auto-cycle handling
   function stopAutoCycle() {
     if (autoTimer !== null) {
       window.clearTimeout(autoTimer);
@@ -721,6 +595,7 @@ if (servicesStack) {
     }, 140);
   }
 
+  // Pointer & Mouse interactions
   stackStage.addEventListener("pointerenter", (event) => {
     if (event.pointerType === "mouse") {
       isCursorTargeting = true;
@@ -753,6 +628,7 @@ if (servicesStack) {
   stackStage.addEventListener("pointerleave", handlePointerLeave);
   servicesStack.addEventListener("pointerleave", handlePointerLeave);
 
+  // Touch swipe interactions
   stackStage.addEventListener("pointerdown", (event) => {
     if (event.pointerType === "touch") {
       touchStartX = event.clientX;
@@ -803,7 +679,10 @@ if (servicesStack) {
         return;
       }
 
-      const isTouchDevice = window.matchMedia("(hover: none) and (pointer: coarse)").matches || window.innerWidth <= 760;
+      const isTouchDevice =
+        window.matchMedia("(hover: none) and (pointer: coarse)").matches ||
+        window.innerWidth <= 760;
+
       if (isTouchDevice && cardIndex !== activeServiceIndex) {
         event.preventDefault();
         event.stopPropagation();
@@ -853,55 +732,11 @@ if (servicesStack) {
   renderInitialDeck();
 }
 
-/* ---------------------------------------------------------
-   Scroll reveal
-   --------------------------------------------------------- */
+/* ==========================================================================
+   6. CASE STUDY & TEAM CARDS TILT INTERACTION
+   ========================================================================== */
 
-const revealObserver = new IntersectionObserver(
-  (entries, observer) => {
-    entries.forEach((entry) => {
-      if (!entry.isIntersecting) {
-        return;
-      }
-
-      entry.target.classList.add("is-visible");
-      observer.unobserve(entry.target);
-    });
-  },
-  { threshold: 0.12 }
-);
-
-revealItems.forEach((item) => revealObserver.observe(item));
-
-/* ---------------------------------------------------------
-   Mobile menu
-   --------------------------------------------------------- */
-
-function closeMenu() {
-  nav?.classList.remove("is-open");
-  menuToggle?.setAttribute("aria-expanded", "false");
-}
-
-menuToggle?.addEventListener("click", () => {
-  const isOpen = nav.classList.toggle("is-open");
-  menuToggle.setAttribute("aria-expanded", String(isOpen));
-});
-
-navLinks.forEach((link) => {
-  link.addEventListener("click", closeMenu);
-});
-
-nav?.querySelector(".nav-talk-cta")?.addEventListener("click", closeMenu);
-
-window.addEventListener("resize", () => {
-  if (window.innerWidth > 760) {
-    closeMenu();
-  }
-});
-
-/* ---------------------------------------------------------
-   Desktop tilt interactions
-   --------------------------------------------------------- */
+const tiltItems = document.querySelectorAll(".case-card, .team-card");
 
 tiltItems.forEach((card) => {
   card.addEventListener("pointermove", (event) => {
@@ -926,10 +761,14 @@ tiltItems.forEach((card) => {
   });
 });
 
-/* ---------------------------------------------------------
-   Let's Talk modal + global button handling
-   --------------------------------------------------------- */
+/* ==========================================================================
+   7. "LET'S TALK" MODAL DIALOG (Lifecycle & Global Interceptor)
+   ========================================================================== */
 
+/**
+ * Generates the modal markup dynamically if not present in initial DOM
+ * (e.g. on service or sub-pages).
+ */
 function getTalkModalMarkup() {
   return `
     <div class="talk-modal-backdrop" data-talk-close></div>
@@ -958,6 +797,9 @@ function getTalkModalMarkup() {
   `.trim();
 }
 
+/**
+ * Ensures the Let's Talk modal container exists in the DOM.
+ */
 function ensureTalkModal() {
   let modal = document.querySelector("#talkModal");
   if (!modal) {
@@ -972,6 +814,9 @@ function ensureTalkModal() {
   return modal;
 }
 
+/**
+ * Opens the Let's Talk modal dialog.
+ */
 function openTalkModal() {
   const modal = ensureTalkModal();
   const form = modal.querySelector("#talkModalForm");
@@ -982,6 +827,9 @@ function openTalkModal() {
   setTimeout(() => modal.querySelector('input[name="name"]')?.focus(), 50);
 }
 
+/**
+ * Closes the Let's Talk modal dialog.
+ */
 function closeTalkModal() {
   const modal = document.querySelector("#talkModal");
   if (!modal) return;
@@ -994,6 +842,9 @@ function closeTalkModal() {
   }
 }
 
+/**
+ * Binds backdrop close and form submission events to a modal instance.
+ */
 function bindTalkModalEvents(modal) {
   modal.querySelectorAll("[data-talk-close]").forEach((target) => {
     target.addEventListener("click", closeTalkModal);
@@ -1009,19 +860,20 @@ function bindTalkModalEvents(modal) {
   });
 }
 
-// Bind existing modal if already in initial DOM
+// Bind existing modal if already in initial HTML
 const initialTalkModal = document.querySelector("#talkModal");
 if (initialTalkModal) {
   bindTalkModalEvents(initialTalkModal);
 }
 
+// Close on Escape key
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     closeTalkModal();
   }
 });
 
-// Intercept ANY Let's Talk button click anywhere on the website
+// Intercept ANY "Let's Talk" button/link clicked anywhere across the page
 document.addEventListener("click", (event) => {
   const btn = event.target.closest("a, button");
   if (!btn) return;
@@ -1043,19 +895,222 @@ document.addEventListener("click", (event) => {
   }
 });
 
+// Auto-open modal if URL has ?openLetsTalk=1 or #letstalk
 const urlParams = new URLSearchParams(window.location.search);
-if (urlParams.get("openLetsTalk") === "1" || urlParams.has("openLetsTalk") || window.location.hash === "#letstalk") {
+if (
+  urlParams.get("openLetsTalk") === "1" ||
+  urlParams.has("openLetsTalk") ||
+  window.location.hash === "#letstalk"
+) {
   openTalkModal();
 }
 
-/* ---------------------------------------------------------
-   Contact Us form
-   --------------------------------------------------------- */
+/* ==========================================================================
+   8. CONTACT FORM SUBMISSION & BUTTON MICRO-ANIMATION
+   ========================================================================== */
 
-contactForm?.addEventListener("submit", (event) => {
-  event.preventDefault();
-  if (!formNote) return;
+const contactForm = document.querySelector("#contactForm");
+const formNote = document.querySelector("#formNote");
 
-  const btn = contactForm.querySelector('button[type="submit"]');
-  submitForm(contactForm, formNote, "CONTACT US", btn);
-});
+if (contactForm) {
+  contactForm.dataset.mountTime = String(pageInitTime);
+
+  contactForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!formNote) return;
+    const btn = contactForm.querySelector('button[type="submit"]');
+    submitForm(contactForm, formNote, "CONTACT US", btn);
+  });
+}
+
+/**
+ * Shared form submission handler.
+ * Manages:
+ * - Client-side validation
+ * - In-flight duplicate prevention
+ * - Dimension freeze (zero layout shift)
+ * - Button-level success micro-animation (SVG checkmark + "Message Sent")
+ * - Error recovery without false success
+ *
+ * @param {HTMLFormElement}   form    — The form element submitted
+ * @param {HTMLElement}       noteEl  — Error message display element
+ * @param {string}            source  — 'LET'S TALK POPUP' or 'CONTACT US'
+ * @param {HTMLButtonElement} btn     — The submit button
+ */
+async function submitForm(form, noteEl, source, btn) {
+  // Guard against duplicate in-flight submissions
+  if (form.dataset.submitting === "true" || btn.disabled) {
+    return;
+  }
+
+  const formData = new FormData(form);
+
+  const rawName = String(formData.get("name") || "").trim();
+  const rawPhone = String(formData.get("phone") || "").trim();
+  const rawEmail = String(formData.get("email") || "").trim();
+  const rawCompany = String(formData.get("company") || "").trim();
+  const rawMessage = String(formData.get("message") || "").trim();
+  const hpCheck = String(formData.get("_hp_check") || "").trim();
+
+  // 1. Client-side quick validation before dispatching network call
+  if (!rawName) {
+    noteEl.style.color = "#ff5252";
+    noteEl.textContent = "Please enter your name.";
+    form.querySelector('[name="name"]')?.focus();
+    return;
+  }
+
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!rawEmail || !emailPattern.test(rawEmail) || rawEmail.length > 254) {
+    noteEl.style.color = "#ff5252";
+    noteEl.textContent = "Please enter a valid email address.";
+    form.querySelector('[name="email"]')?.focus();
+    return;
+  }
+
+  const phoneDigits = rawPhone.replace(/\D/g, "");
+  const phonePattern = /^[+]?[0-9\s\-()]{7,20}$/;
+  if (!rawPhone || !phonePattern.test(rawPhone) || phoneDigits.length < 7 || rawPhone.length > 20) {
+    noteEl.style.color = "#ff5252";
+    noteEl.textContent = "Please enter a valid mobile number (7–20 digits).";
+    form.querySelector('[name="phone"]')?.focus();
+    return;
+  }
+
+  if (rawCompany.length > 120) {
+    noteEl.style.color = "#ff5252";
+    noteEl.textContent = "Company name cannot exceed 120 characters.";
+    return;
+  }
+
+  if (rawMessage.length > 3000) {
+    noteEl.style.color = "#ff5252";
+    noteEl.textContent = "Message cannot exceed 3000 characters.";
+    return;
+  }
+
+  // 2. Lock button state and dimensions to prevent layout shift
+  form.dataset.submitting = "true";
+  const originalHtml = btn.innerHTML;
+  btn.disabled = true;
+
+  const initialHeight = btn.offsetHeight;
+  if (initialHeight > 0) {
+    btn.style.minHeight = `${initialHeight}px`;
+  }
+
+  // 3. Smooth transition to Sending state inside button
+  btn.innerHTML = '<span class="button-state-wrap is-entering"><span class="button-state-text">Sending…</span></span>';
+  noteEl.textContent = "";
+  noteEl.style.color = "";
+
+  const mountTime = Number(form.dataset.mountTime || pageInitTime);
+  const elapsedMs = Math.max(0, Date.now() - mountTime);
+
+  const payload = {
+    name: rawName,
+    phone: rawPhone,
+    email: rawEmail,
+    company: rawCompany,
+    message: rawMessage,
+    formSource: source,
+    _hp_check: hpCheck,
+    _ts_check: String(elapsedMs),
+  };
+
+  let isSuccess = false;
+
+  try {
+    const response = await fetch(`${API_BASE}/api/contact`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const result = await response.json();
+
+    if (response.ok && result.success) {
+      isSuccess = true;
+      form.reset();
+      noteEl.textContent = "";
+
+      // 4. Smooth transition into Success state inside the button
+      const currentWrap = btn.querySelector(".button-state-wrap");
+      if (currentWrap) {
+        currentWrap.classList.add("is-leaving");
+      }
+
+      setTimeout(() => {
+        btn.innerHTML = `
+          <span class="button-state-wrap is-entering" aria-live="polite">
+            <svg class="button-success-icon" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 8.5L6.5 12L13 4.5"/>
+            </svg>
+            <span class="button-state-text">Message Sent</span>
+          </span>
+        `.trim();
+      }, currentWrap ? 140 : 0);
+
+      // 5. Clean restoration after 4.5s or on next user input interaction
+      let resetTimer = setTimeout(restoreToNormal, 4500);
+
+      function restoreToNormal() {
+        if (resetTimer) {
+          clearTimeout(resetTimer);
+          resetTimer = null;
+        }
+        form.removeEventListener("input", onFormInput);
+
+        const successWrap = btn.querySelector(".button-state-wrap");
+        if (successWrap) {
+          successWrap.classList.add("is-leaving");
+          setTimeout(() => {
+            btn.innerHTML = originalHtml;
+            btn.disabled = false;
+            btn.style.minHeight = "";
+            form.dataset.submitting = "false";
+          }, 140);
+        } else {
+          btn.innerHTML = originalHtml;
+          btn.disabled = false;
+          btn.style.minHeight = "";
+          form.dataset.submitting = "false";
+        }
+      }
+
+      function onFormInput() {
+        restoreToNormal();
+      }
+
+      form.addEventListener("input", onFormInput, { once: true });
+    } else {
+      // 6. Handle backend rejection — restore button immediately, show error
+      noteEl.style.color = "#ff5252";
+      if (result.errors) {
+        const messages = Object.values(result.errors);
+        noteEl.textContent = messages.join(" ");
+      } else {
+        noteEl.textContent = result.error || "Something went wrong. Please try again.";
+      }
+      btn.innerHTML = originalHtml;
+      btn.disabled = false;
+      btn.style.minHeight = "";
+      form.dataset.submitting = "false";
+    }
+  } catch (_networkError) {
+    // 7. Handle network drop — restore button immediately, show network error
+    noteEl.style.color = "#ff5252";
+    noteEl.textContent = "Network error — please check your connection and try again.";
+    btn.innerHTML = originalHtml;
+    btn.disabled = false;
+    btn.style.minHeight = "";
+    form.dataset.submitting = "false";
+  } finally {
+    if (!isSuccess) {
+      form.dataset.submitting = "false";
+      btn.disabled = false;
+      btn.innerHTML = originalHtml;
+      btn.style.minHeight = "";
+    }
+  }
+}

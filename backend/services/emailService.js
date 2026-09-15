@@ -1,14 +1,19 @@
-/* =========================================================
-   JYSA Media — Email service
-   Sends contact-form emails via GoDaddy Professional Email SMTP.
-   ========================================================= */
+/* ==========================================================================
+   JYSA MEDIA — EMAIL SERVICE (emailService.js)
+   
+   Architecture Overview:
+   1. SMTP Transporter (Connection Pool & SSL/TLS Configuration)
+   2. Security Helpers (HTML Escaping & CRLF Header Sanitation)
+   3. Enquiry Classification (Categorization & Source Helpers)
+   4. Email 1: Enquiry Notification to JYSA Media Team
+   5. Email 2: Confirmation Receipt to Website Visitor
+   ========================================================================== */
 
 const nodemailer = require("nodemailer");
 
-/* ---------------------------------------------------------
-   SMTP transporter (lazy — created on first use so env vars
-   are guaranteed to be loaded by dotenv)
-   --------------------------------------------------------- */
+/* ==========================================================================
+   1. SMTP TRANSPORTER (Connection Pool & SSL/TLS Configuration)
+   ========================================================================== */
 
 let _transporter = null;
 
@@ -33,9 +38,9 @@ function getTransporter() {
   return _transporter;
 }
 
-/* ---------------------------------------------------------
-   Security helpers: HTML escaping & CRLF header sanitation
-   --------------------------------------------------------- */
+/* ==========================================================================
+   2. SECURITY HELPERS (HTML Escaping & CRLF Header Sanitation)
+   ========================================================================== */
 
 function escapeHtml(str) {
   if (typeof str !== "string") return "";
@@ -52,9 +57,9 @@ function cleanHeader(val) {
   return val.replace(/[\r\n]/g, "").trim();
 }
 
-/* ---------------------------------------------------------
-   Helpers to determine Enquiry Type and Form Source
-   --------------------------------------------------------- */
+/* ==========================================================================
+   3. ENQUIRY CLASSIFICATION (Categorization & Source Helpers)
+   ========================================================================== */
 
 function determineEnquiryType(formSource, message) {
   const msg = (message || "").toLowerCase();
@@ -83,9 +88,9 @@ function determineSource(formSource) {
   return "CONTACT US FORM";
 }
 
-/* ---------------------------------------------------------
-   EMAIL 1: Send enquiry notification to JYSA Media
-   --------------------------------------------------------- */
+/* ==========================================================================
+   4. EMAIL 1: ENQUIRY NOTIFICATION TO JYSA MEDIA
+   ========================================================================== */
 
 async function sendEnquiryEmail({ name, phone, email, company, message, formSource }) {
   const enquiryType = determineEnquiryType(formSource, message);
@@ -195,9 +200,9 @@ async function sendEnquiryEmail({ name, phone, email, company, message, formSour
   return info;
 }
 
-/* ---------------------------------------------------------
-   EMAIL 2: Send automatic confirmation email to visitor
-   --------------------------------------------------------- */
+/* ==========================================================================
+   5. EMAIL 2: CONFIRMATION RECEIPT TO WEBSITE VISITOR
+   ========================================================================== */
 
 async function sendConfirmationEmail({ name, email, formSource, message }) {
   const enquiryType = determineEnquiryType(formSource, message);

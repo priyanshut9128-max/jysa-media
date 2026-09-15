@@ -1,16 +1,24 @@
-/* =========================================================
-   JYSA Media — Vercel Serverless Function & Reverse Proxy
-   Handles /api/* requests on Vercel deployments.
-   ========================================================= */
+/* ==========================================================================
+   JYSA MEDIA — VERCEL SERVERLESS FUNCTION & REVERSE PROXY (api/index.js)
+   
+   Architecture Overview:
+   - In standard Vercel deployments: Directly executes the Express app.
+   - If BACKEND_URL is set: Functions as a secure reverse proxy to an
+     external backend service (e.g. Render, Railway) with SSRF safeguards.
+   ========================================================================== */
 
 const path = require("path");
 
-// Load backend/.env if present (useful in local testing)
+// Load backend/.env if present (useful in local serverless emulation)
 try {
   require("dotenv").config({ path: path.join(__dirname, "../backend/.env") });
 } catch (e) {}
 
 const app = require("../backend/server");
+
+/* ==========================================================================
+   SERVERLESS REQUEST & RESPONSE HELPERS
+   ========================================================================== */
 
 function getRequestBody(req) {
   if (req.body !== undefined) {
@@ -48,6 +56,10 @@ function sendResponse(res, statusCode, headers, body) {
   }
   return res.end(body);
 }
+
+/* ==========================================================================
+   VERCEL ENTRYPOINT (Reverse Proxy or Native Express Execution)
+   ========================================================================== */
 
 module.exports = async (req, res) => {
   // If an external backend URL is specified (e.g. Render/Railway), reverse-proxy to it

@@ -1317,19 +1317,6 @@ button {
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .button-state-wrap,
-  .button-state-wrap.is-entering,
-  .button-success-icon,
-  .button-success-icon path {
-    animation: none !important;
-    transition: none !important;
-    transform: none !important;
-    stroke-dashoffset: 0 !important;
-    opacity: 1 !important;
-  }
-}
-
 .form-note {
   margin: 12px 0 0;
   color: #7e3942;
@@ -1916,6 +1903,17 @@ body.talk-modal-open {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+  }
+
+  .button-state-wrap,
+  .button-state-wrap.is-entering,
+  .button-success-icon,
+  .button-success-icon path {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    stroke-dashoffset: 0 !important;
+    opacity: 1 !important;
   }
 }
 

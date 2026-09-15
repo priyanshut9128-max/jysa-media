@@ -1,7 +1,17 @@
-/* =========================================================
-   JYSA Media — Backend API Server
-   Express entry point: loads env, mounts middleware & routes.
-   ========================================================= */
+/* ==========================================================================
+   JYSA MEDIA — BACKEND API SERVER (server.js)
+   
+   Architecture Overview:
+   1. Configuration & Environment Setup
+   2. Security Middleware (Helmet, CORS, JSON Body Parser)
+   3. API Routes & Health Checks
+   4. Global Error Handlers (CORS, 413, 400, 500)
+   5. Server Lifecycle & Timeout Guards
+   ========================================================================== */
+
+/* ==========================================================================
+   1. CONFIGURATION & ENVIRONMENT SETUP
+   ========================================================================== */
 
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, ".env") });
@@ -20,9 +30,9 @@ app.set("trust proxy", 1);
 // Prevent framework fingerprinting
 app.disable("x-powered-by");
 
-/* ---------------------------------------------------------
-   Middleware
-   --------------------------------------------------------- */
+/* ==========================================================================
+   2. SECURITY MIDDLEWARE (Helmet, CORS, Body Parser)
+   ========================================================================== */
 
 // Secure HTTP headers with explicit clickjacking frameguard
 app.use(
@@ -78,9 +88,9 @@ app.use(
 // JSON body parser — 10 KB limit to prevent abuse
 app.use(express.json({ limit: "10kb" }));
 
-/* ---------------------------------------------------------
-   Routes
-   --------------------------------------------------------- */
+/* ==========================================================================
+   3. API ROUTES & HEALTH CHECKS
+   ========================================================================== */
 
 app.use("/api/contact", contactRouter);
 app.use("/contact", contactRouter);
@@ -103,9 +113,9 @@ app.use((_req, res) => {
   res.status(404).json({ success: false, error: "Endpoint not found" });
 });
 
-/* ---------------------------------------------------------
-   Global error handler
-   --------------------------------------------------------- */
+/* ==========================================================================
+   4. GLOBAL ERROR HANDLERS (CORS, 413, 400, 500)
+   ========================================================================== */
 
 app.use((err, _req, res, _next) => {
   // CORS errors
@@ -140,9 +150,9 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ success: false, error: "Internal server error" });
 });
 
-/* ---------------------------------------------------------
-   Start with connection timeouts (when run directly)
-   --------------------------------------------------------- */
+/* ==========================================================================
+   5. SERVER LIFECYCLE & TIMEOUT GUARDS
+   ========================================================================== */
 
 if (require.main === module) {
   const server = app.listen(PORT, () => {

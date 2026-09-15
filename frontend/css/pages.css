@@ -1,4 +1,11 @@
-/* JYSA Media — shared inner-page styles. */
+/* ==========================================================================
+   JYSA MEDIA — Inner Pages Stylesheet (pages.css)
+   Applies to service overview and inner topic pages.
+   ========================================================================== */
+
+/* ==========================================================================
+   1. CSS VARIABLES & BASE RESET
+   ========================================================================== */
 :root {
   --red: #e31324;
   --red-dark: #b80e1e;
@@ -20,6 +27,9 @@ body {
 
 a { text-decoration: none; }
 
+/* ==========================================================================
+   2. INNER PAGE LAYOUT & HERO COMPONENTS
+   ========================================================================== */
 .page {
   width: min(1180px, calc(100% - 40px));
   margin: 0 auto;
@@ -144,7 +154,9 @@ h1 {
   .page-grid { grid-template-columns: 1fr; }
 }
 
-/* Shared JYSA homepage-style header/footer on inner pages. */
+/* ==========================================================================
+   3. SHARED HOMEPAGE-STYLE HEADER & FOOTER (INNER PAGES)
+   ========================================================================== */
 .inner-site-header {
   position: sticky;
   top: 14px;
@@ -355,9 +367,9 @@ h1 {
   }
 }
 
-/* ---------------------------------------------------------
-   Let's Talk modal (shared)
-   --------------------------------------------------------- */
+/* ==========================================================================
+   4. LET'S TALK MODAL DIALOG (SHARED)
+   ========================================================================== */
 
 .talk-modal {
   position: fixed;
@@ -525,7 +537,9 @@ h1 {
   box-shadow: none;
 }
 
-/* Button-level Micro-Animation States */
+/* ==========================================================================
+   5. BUTTON-LEVEL MICRO-ANIMATION STATES & REDUCED MOTION
+   ========================================================================== */
 .button-state-wrap {
   display: inline-flex;
   align-items: center;

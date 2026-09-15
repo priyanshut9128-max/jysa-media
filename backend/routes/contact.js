@@ -1,7 +1,14 @@
-/* =========================================================
-   JYSA Media — Contact route
-   POST /api/contact
-   ========================================================= */
+/* ==========================================================================
+   JYSA MEDIA — CONTACT ROUTE (contact.js)
+   
+   Route: POST /api/contact
+   
+   Architecture Overview:
+   1. Rate Limiting Middleware (5 req / 15 min per IP)
+   2. Content-Type Validation Middleware (415 for non-JSON)
+   3. HTTP Method Enforcement Middleware (405 for non-POST)
+   4. Route Handler Dispatch (controllers/contactController.js)
+   ========================================================================== */
 
 const express = require("express");
 const rateLimit = require("express-rate-limit");
@@ -9,10 +16,9 @@ const { handleSubmission } = require("../controllers/contactController");
 
 const router = express.Router();
 
-/* ---------------------------------------------------------
-   Rate limiter — 5 requests per IP every 15 minutes
-   Extracts client IP reliably across Vercel reverse proxies
-   --------------------------------------------------------- */
+/* ==========================================================================
+   1. RATE LIMITING MIDDLEWARE
+   ========================================================================== */
 
 const contactLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -31,9 +37,9 @@ const contactLimiter = rateLimit({
   },
 });
 
-/* ---------------------------------------------------------
-   Content-Type validation middleware
-   --------------------------------------------------------- */
+/* ==========================================================================
+   2. CONTENT-TYPE VALIDATION MIDDLEWARE
+   ========================================================================== */
 
 function requireJsonContentType(req, res, next) {
   if (!req.is("application/json")) {
@@ -45,10 +51,9 @@ function requireJsonContentType(req, res, next) {
   next();
 }
 
-/* ---------------------------------------------------------
-   Method enforcement & handler
-   Rejects non-POST methods with 405 Method Not Allowed
-   --------------------------------------------------------- */
+/* ==========================================================================
+   3. HTTP METHOD ENFORCEMENT & ROUTE DISPATCH
+   ========================================================================== */
 
 router.all("/", (req, res, next) => {
   if (req.method === "OPTIONS") {

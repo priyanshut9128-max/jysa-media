@@ -1,5 +1,11 @@
-/* Shared styles for JYSA Media service pages. */
+/* ==========================================================================
+   JYSA MEDIA — Service Pages Stylesheet (service.css)
+   Applies to rich interactive service detail pages.
+   ========================================================================== */
 
+/* ==========================================================================
+   1. CSS VARIABLES & BASE RESET
+   ========================================================================== */
 :root {
   --red: #e31324;
   --red-dark: #b80e1e;
@@ -30,6 +36,9 @@ a {
   text-decoration: none;
 }
 
+/* ==========================================================================
+   2. SERVICE PAGE LAYOUT & HERO COMPONENTS
+   ========================================================================== */
 .page-shell {
   width: min(1180px, calc(100% - 40px));
   margin: 0 auto;
@@ -294,7 +303,9 @@ h1 {
   }
 }
 
-/* Shared JYSA homepage-style header/footer on inner pages. */
+/* ==========================================================================
+   3. SHARED HOMEPAGE-STYLE HEADER & FOOTER
+   ========================================================================== */
 .inner-site-header {
   position: sticky;
   top: 14px;
@@ -505,7 +516,9 @@ h1 {
   }
 }
 
-/* Social Media page — requested orbit visuals only. */
+/* ==========================================================================
+   4. SOCIAL MEDIA SERVICE PAGE — HERO ORBIT VISUALS
+   ========================================================================== */
 .social-media-page .social-hero-object {
   white-space: normal;
 }
@@ -610,9 +623,9 @@ h1 {
   height: 30px;
 }
 
-/* ---------------------------------------------------------
-   Let's Talk modal (shared)
-   --------------------------------------------------------- */
+/* ==========================================================================
+   5. LET'S TALK MODAL DIALOG (SHARED)
+   ========================================================================== */
 
 .talk-modal {
   position: fixed;
@@ -780,7 +793,9 @@ h1 {
   box-shadow: none;
 }
 
-/* Button-level Micro-Animation States */
+/* ==========================================================================
+   6. BUTTON-LEVEL MICRO-ANIMATION STATES & REDUCED MOTION
+   ========================================================================== */
 .button-state-wrap {
   display: inline-flex;
   align-items: center;

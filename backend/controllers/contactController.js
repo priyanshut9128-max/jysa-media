@@ -1,15 +1,29 @@
-/* =========================================================
-   JYSA Media — Contact controller
-   Validates input, sanitizes text, and delegates to email service.
-   ========================================================= */
+/* ==========================================================================
+   JYSA MEDIA — CONTACT CONTROLLER (contactController.js)
+   
+   Architecture Overview:
+   1. Allowlist Constants & Permitted Schema Fields
+   2. Duplicate Submission Debounce Cache (60s TTL)
+   3. Sanitization & CRLF Injection Defense Helpers
+   4. Main Submission Handler:
+      - Step 1: JSON body validation
+      - Step 2: Schema key allowlist enforcement
+      - Step 3: Honeypot bot protection
+      - Step 4: Submission timing bot check
+      - Step 5: Server-side field validation & length checks
+      - Step 6: Text sanitization & normalization
+      - Step 7: Duplicate hash debouncing
+      - Step 8: Concurrent SMTP email dispatch
+      - Step 9: HTTP 200 success response
+   ========================================================================== */
 
 const crypto = require("crypto");
 const validator = require("validator");
 const emailService = require("../services/emailService");
 
-/* ---------------------------------------------------------
-   Allowed form-source values & permitted fields
-   --------------------------------------------------------- */
+/* ==========================================================================
+   1. ALLOWLIST CONSTANTS & PERMITTED SCHEMA FIELDS
+   ========================================================================== */
 
 const VALID_SOURCES = ["LET'S TALK POPUP", "CONTACT US"];
 
@@ -24,10 +38,9 @@ const ALLOWED_FIELDS = new Set([
   "_ts_check",
 ]);
 
-/* ---------------------------------------------------------
-   Duplicate submission debounce cache (60s TTL)
-   Prevents double clicks, automated bursts, and email bombing
-   --------------------------------------------------------- */
+/* ==========================================================================
+   2. DUPLICATE SUBMISSION DEBOUNCE CACHE (60s TTL)
+   ========================================================================== */
 
 const recentSubmissions = new Map();
 
@@ -40,9 +53,9 @@ function cleanExpiredSubmissions() {
   }
 }
 
-/* ---------------------------------------------------------
-   Helpers for safe string sanitization and CRLF prevention
-   --------------------------------------------------------- */
+/* ==========================================================================
+   3. SANITIZATION & CRLF INJECTION DEFENSE HELPERS
+   ========================================================================== */
 
 // Check for dangerous CRLF injection characters
 function hasCrlf(str) {
@@ -67,9 +80,9 @@ function sanitizeLogMessage(msg) {
   return msg.replace(/([a-zA-Z0-9_\-\.\:\/]{30,})/g, "[REDACTED]");
 }
 
-/* ---------------------------------------------------------
-   Handler
-   --------------------------------------------------------- */
+/* ==========================================================================
+   4. MAIN SUBMISSION HANDLER (handleSubmission)
+   ========================================================================== */
 
 async function handleSubmission(req, res) {
   try {
