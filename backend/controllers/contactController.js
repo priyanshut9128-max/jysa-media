@@ -5,7 +5,7 @@
 
 const crypto = require("crypto");
 const validator = require("validator");
-const { sendEnquiryEmail, sendConfirmationEmail } = require("../services/emailService");
+const emailService = require("../services/emailService");
 
 /* ---------------------------------------------------------
    Allowed form-source values & permitted fields
@@ -221,20 +221,29 @@ async function handleSubmission(req, res) {
       formSource,
     };
 
-    /* ---------- send emails ---------- */
+    /* ---------- send emails concurrently ---------- */
 
-    // 1. Send enquiry notification to business inbox (hello@jysamedia.in)
-    await sendEnquiryEmail(data);
+    // Dispatch both enquiry notification and visitor confirmation concurrently
+    // across the pooled SMTP transporter to eliminate sequential latency
+    const [enquiryResult, confirmResult] = await Promise.allSettled([
+      emailService.sendEnquiryEmail(data),
+      emailService.sendConfirmationEmail(data),
+    ]);
 
-    // 2. Send automatic confirmation email to visitor's email
-    try {
-      await sendConfirmationEmail(data);
-    } catch (confirmError) {
-      console.error(
-        "[Contact Controller] Failed to send customer confirmation email:",
-        sanitizeLogMessage(confirmError.message)
+    // If the primary business enquiry email failed, report failure to caller
+    if (enquiryResult.status === "rejected") {
+      throw (
+        enquiryResult.reason ||
+        new Error("Failed to deliver enquiry notification email.")
       );
-      // Logged on server without exposing SMTP credentials or server details to visitor
+    }
+
+    // Log confirmation failure as warning without failing the user's accepted enquiry
+    if (confirmResult.status === "rejected") {
+      console.warn(
+        "[Contact Controller] Note: Confirmation email to visitor could not be delivered:",
+        sanitizeLogMessage(confirmResult.reason?.message || "Unknown error")
+      );
     }
 
     return res.status(200).json({

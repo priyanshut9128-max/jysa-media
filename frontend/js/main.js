@@ -33,6 +33,10 @@ const API_BASE =
  * @param {HTMLButtonElement} btn     — the submit button
  */
 async function submitForm(form, noteEl, source, btn) {
+  if (form.dataset.submitting === "true" || btn.disabled) {
+    return;
+  }
+
   const formData = new FormData(form);
 
   const rawName = String(formData.get("name") || "").trim();
@@ -79,6 +83,14 @@ async function submitForm(form, noteEl, source, btn) {
     return;
   }
 
+  // Prevent duplicate clicks & show immediate Sending state
+  form.dataset.submitting = "true";
+  const originalLabel = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = "Sending…";
+  noteEl.textContent = "";
+  noteEl.style.color = "";
+
   const mountTime = Number(form.dataset.mountTime || pageInitTime);
   const elapsedMs = Math.max(0, Date.now() - mountTime);
 
@@ -92,13 +104,6 @@ async function submitForm(form, noteEl, source, btn) {
     _hp_check: hpCheck,
     _ts_check: String(elapsedMs),
   };
-
-  // Disable button and show loading state
-  const originalLabel = btn.textContent;
-  btn.disabled = true;
-  btn.textContent = "Sending…";
-  noteEl.textContent = "";
-  noteEl.style.color = "";
 
   try {
     const response = await fetch(`${API_BASE}/api/contact`, {
@@ -127,6 +132,7 @@ async function submitForm(form, noteEl, source, btn) {
     noteEl.style.color = "#ff5252";
     noteEl.textContent = "Network error — please check your connection and try again.";
   } finally {
+    form.dataset.submitting = "false";
     btn.disabled = false;
     btn.textContent = originalLabel;
   }
