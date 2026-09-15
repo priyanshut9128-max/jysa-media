@@ -1,8 +1,12 @@
 {
   "name": "jysa-media-backend",
   "version": "1.0.0",
+  "private": true,
   "description": "JYSA Media — Contact form API with GoDaddy SMTP email delivery",
   "main": "server.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js"
