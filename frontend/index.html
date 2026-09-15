@@ -90,16 +90,16 @@
     ----------------------------------------- -->
     <section class="hero" id="home">
       <div class="hero-copy reveal">
-        <p class="eyebrow"><span class="dot"></span>DIGITAL MARKETING AGENCY</p>
+        <p class="eyebrow"><span class="dot"></span>Digital Marketing Agency</p>
 
         <h1 class="hero-title">
-          WE DON'T JUST
+          We Don't Just
           <br>
-          DO <span class="text-red">DIGITAL.</span>
+          Do <span class="text-red">Digital.</span>
           <br>
-          WE MAKE BRANDS
+          We Make Brands
           <br>
-          <span class="text-box">IMPOSSIBLE TO IGNORE.</span>
+          <span class="text-box">Impossible to Ignore.</span>
         </h1>
 
         <p class="hero-description">
@@ -108,7 +108,7 @@
         </p>
 
         <div class="hero-actions">
-          <a class="button button-red" href="pages/services.html">LET'S GROW TOGETHER →</a>
+          <a class="button button-red" href="pages/services.html">Let's Grow Together →</a>
           <a class="button button-outline" href="pages/work.html">WATCH OUR WORK ◉</a>
         </div>
 
@@ -188,14 +188,14 @@
     <section class="section section-white" id="about">
       <div class="about-grid">
         <div class="reveal">
-          <p class="eyebrow"><span class="dot"></span>ABOUT US</p>
+          <p class="eyebrow"><span class="dot"></span>About Us</p>
 
           <h2 class="section-title">
-            WE BUILD
-            <span class="text-red">BRANDS.</span>
+            We Build
+            <span class="text-red">Brands.</span>
             <br>
-            WE DRIVE
-            <span class="text-box">GROWTH.</span>
+            We Drive
+            <span class="text-box">Growth.</span>
           </h2>
 
           <div class="content-block">
@@ -478,11 +478,26 @@
       <form class="contact-form reveal" id="contactForm">
         <input type="text" name="_hp_check" style="display:none !important; position:absolute; left:-9999px; width:0; height:0;" tabindex="-1" autocomplete="off" aria-hidden="true">
         <div class="form-grid">
-          <input type="text" name="name" placeholder="Name *" required maxlength="100" autocomplete="name">
-          <input type="email" name="email" placeholder="Email *" required maxlength="254" autocomplete="email">
-          <input type="tel" name="phone" placeholder="Phone *" required maxlength="20" pattern="[0-9+\s\-()]{7,20}" title="Please enter a valid phone number (7–20 digits)" autocomplete="tel">
-          <input type="text" name="company" placeholder="Company" maxlength="120" autocomplete="organization">
-          <textarea name="message" placeholder="How can we help?" maxlength="3000"></textarea>
+          <div class="form-field">
+            <label for="contact-name" class="form-label">Name <span class="required-star" aria-hidden="true">*</span></label>
+            <input id="contact-name" type="text" name="name" placeholder="Your full name" required maxlength="100" autocomplete="name">
+          </div>
+          <div class="form-field">
+            <label for="contact-email" class="form-label">Email <span class="required-star" aria-hidden="true">*</span></label>
+            <input id="contact-email" type="email" name="email" placeholder="name@company.com" required maxlength="254" autocomplete="email">
+          </div>
+          <div class="form-field">
+            <label for="contact-phone" class="form-label">Phone <span class="required-star" aria-hidden="true">*</span></label>
+            <input id="contact-phone" type="tel" name="phone" placeholder="Mobile number" required maxlength="20" pattern="[0-9+\s\-()]{7,20}" title="Please enter a valid phone number (7–20 digits)" autocomplete="tel">
+          </div>
+          <div class="form-field">
+            <label for="contact-company" class="form-label">Company</label>
+            <input id="contact-company" type="text" name="company" placeholder="Company or brand" maxlength="120" autocomplete="organization">
+          </div>
+          <div class="form-field form-field-full">
+            <label for="contact-message" class="form-label">Message</label>
+            <textarea id="contact-message" name="message" placeholder="How can we help you grow?" maxlength="3000"></textarea>
+          </div>
         </div>
 
         <button class="button button-submit" type="submit">SEND MESSAGE →</button>

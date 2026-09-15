@@ -243,84 +243,80 @@ if (servicesStack) {
 
     if (width <= 360) {
       return {
-        0:    { x: 0,   y: 0,  rotate: 0,    scale: 1,    zDepth: 34,  zIndex: 70, opacity: 1 },
-        1:    { x: 18,  y: 8,  rotate: 2.5,  scale: 0.97, zDepth: 18,  zIndex: 60, opacity: 1 },
-        2:    { x: 36,  y: 16, rotate: 5,    scale: 0.94, zDepth: 6,   zIndex: 50, opacity: 1 },
-        3:    { x: 48,  y: 24, rotate: 7,    scale: 0.91, zDepth: -6,  zIndex: 40, opacity: 1 },
-        4:    { x: 56,  y: 30, rotate: 7,    scale: 0.88, zDepth: -32, zIndex: 20, opacity: 0 },
-        [-1]: { x: -18, y: 8,  rotate: -2.5, scale: 0.97, zDepth: 18,  zIndex: 55, opacity: 1 },
-        [-2]: { x: -36, y: 16, rotate: -5,   scale: 0.94, zDepth: 6,   zIndex: 45, opacity: 1 },
-        [-3]: { x: -48, y: 24, rotate: -7,   scale: 0.91, zDepth: -6,  zIndex: 35, opacity: 1 },
-        [-4]: { x: -56, y: 30, rotate: -7,   scale: 0.88, zDepth: -32, zIndex: 20, opacity: 0 }
+        0:    { x: 0,   y: 0,  rotate: 0, scale: 1,    zDepth: 34,  zIndex: 70, opacity: 1 },
+        1:    { x: 18,  y: 8,  rotate: 0, scale: 0.97, zDepth: 18,  zIndex: 60, opacity: 1 },
+        2:    { x: 36,  y: 16, rotate: 0, scale: 0.94, zDepth: 6,   zIndex: 50, opacity: 1 },
+        3:    { x: 48,  y: 24, rotate: 0, scale: 0.91, zDepth: -6,  zIndex: 40, opacity: 1 },
+        4:    { x: 56,  y: 30, rotate: 0, scale: 0.88, zDepth: -32, zIndex: 20, opacity: 0 },
+        [-1]: { x: -18, y: 8,  rotate: 0, scale: 0.97, zDepth: 18,  zIndex: 55, opacity: 1 },
+        [-2]: { x: -36, y: 16, rotate: 0, scale: 0.94, zDepth: 6,   zIndex: 45, opacity: 1 },
+        [-3]: { x: -48, y: 24, rotate: 0, scale: 0.91, zDepth: -6,  zIndex: 35, opacity: 1 },
+        [-4]: { x: -56, y: 30, rotate: 0, scale: 0.88, zDepth: -32, zIndex: 20, opacity: 0 }
       };
     }
 
     if (width <= 480) {
       return {
-        0:    { x: 0,   y: 0,  rotate: 0,    scale: 1,    zDepth: 34,  zIndex: 70, opacity: 1 },
-        1:    { x: 25,  y: 8,  rotate: 2.5,  scale: 0.97, zDepth: 18,  zIndex: 60, opacity: 1 },
-        2:    { x: 50,  y: 16, rotate: 5,    scale: 0.94, zDepth: 6,   zIndex: 50, opacity: 1 },
-        3:    { x: 65,  y: 24, rotate: 7.5,  scale: 0.91, zDepth: -6,  zIndex: 40, opacity: 1 },
-        4:    { x: 75,  y: 30, rotate: 7.5,  scale: 0.88, zDepth: -32, zIndex: 20, opacity: 0 },
-        [-1]: { x: -25, y: 8,  rotate: -2.5, scale: 0.97, zDepth: 18,  zIndex: 55, opacity: 1 },
-        [-2]: { x: -50, y: 16, rotate: -5,   scale: 0.94, zDepth: 6,   zIndex: 45, opacity: 1 },
-        [-3]: { x: -65, y: 24, rotate: -7.5, scale: 0.91, zDepth: -6,  zIndex: 35, opacity: 1 },
-        [-4]: { x: -75, y: 30, rotate: -7.5, scale: 0.88, zDepth: -32, zIndex: 20, opacity: 0 }
+        0:    { x: 0,   y: 0,  rotate: 0, scale: 1,    zDepth: 34,  zIndex: 70, opacity: 1 },
+        1:    { x: 25,  y: 8,  rotate: 0, scale: 0.97, zDepth: 18,  zIndex: 60, opacity: 1 },
+        2:    { x: 50,  y: 16, rotate: 0, scale: 0.94, zDepth: 6,   zIndex: 50, opacity: 1 },
+        3:    { x: 65,  y: 24, rotate: 0, scale: 0.91, zDepth: -6,  zIndex: 40, opacity: 1 },
+        4:    { x: 75,  y: 30, rotate: 0, scale: 0.88, zDepth: -32, zIndex: 20, opacity: 0 },
+        [-1]: { x: -25, y: 8,  rotate: 0, scale: 0.97, zDepth: 18,  zIndex: 55, opacity: 1 },
+        [-2]: { x: -50, y: 16, rotate: 0, scale: 0.94, zDepth: 6,   zIndex: 45, opacity: 1 },
+        [-3]: { x: -65, y: 24, rotate: 0, scale: 0.91, zDepth: -6,  zIndex: 35, opacity: 1 },
+        [-4]: { x: -75, y: 30, rotate: 0, scale: 0.88, zDepth: -32, zIndex: 20, opacity: 0 }
       };
     }
 
     if (width <= 768) {
       return {
-        0:    { x: 0,    y: 0,  rotate: 0,    scale: 1,    zDepth: 34,  zIndex: 70, opacity: 1 },
-        1:    { x: 65,   y: 10, rotate: 3,    scale: 0.97, zDepth: 18,  zIndex: 60, opacity: 1 },
-        2:    { x: 130,  y: 20, rotate: 6,    scale: 0.94, zDepth: 6,   zIndex: 50, opacity: 1 },
-        3:    { x: 195,  y: 30, rotate: 8.5,  scale: 0.91, zDepth: -6,  zIndex: 40, opacity: 1 },
-        4:    { x: 225,  y: 38, rotate: 8.5,  scale: 0.88, zDepth: -32, zIndex: 20, opacity: 0 },
-        [-1]: { x: -65,  y: 10, rotate: -3,   scale: 0.97, zDepth: 18,  zIndex: 55, opacity: 1 },
-        [-2]: { x: -130, y: 20, rotate: -6,   scale: 0.94, zDepth: 6,   zIndex: 45, opacity: 1 },
-        [-3]: { x: -195, y: 30, rotate: -8.5, scale: 0.91, zDepth: -6,  zIndex: 35, opacity: 1 },
-        [-4]: { x: -225, y: 38, rotate: -8.5, scale: 0.88, zDepth: -32, zIndex: 20, opacity: 0 }
+        0:    { x: 0,    y: 0,  rotate: 0, scale: 1,    zDepth: 34,  zIndex: 70, opacity: 1 },
+        1:    { x: 65,   y: 10, rotate: 0, scale: 0.97, zDepth: 18,  zIndex: 60, opacity: 1 },
+        2:    { x: 130,  y: 20, rotate: 0, scale: 0.94, zDepth: 6,   zIndex: 50, opacity: 1 },
+        3:    { x: 195,  y: 30, rotate: 0, scale: 0.91, zDepth: -6,  zIndex: 40, opacity: 1 },
+        4:    { x: 225,  y: 38, rotate: 0, scale: 0.88, zDepth: -32, zIndex: 20, opacity: 0 },
+        [-1]: { x: -65,  y: 10, rotate: 0, scale: 0.97, zDepth: 18,  zIndex: 55, opacity: 1 },
+        [-2]: { x: -130, y: 20, rotate: 0, scale: 0.94, zDepth: 6,   zIndex: 45, opacity: 1 },
+        [-3]: { x: -195, y: 30, rotate: 0, scale: 0.91, zDepth: -6,  zIndex: 35, opacity: 1 },
+        [-4]: { x: -225, y: 38, rotate: 0, scale: 0.88, zDepth: -32, zIndex: 20, opacity: 0 }
       };
     }
 
     if (width <= 1100) {
       return {
-        0:    { x: 0,    y: 0,  rotate: 0,    scale: 1,    zDepth: 34,  zIndex: 70, opacity: 1 },
-        1:    { x: 105,  y: 14, rotate: 3.5,  scale: 0.98, zDepth: 18,  zIndex: 60, opacity: 1 },
-        2:    { x: 210,  y: 28, rotate: 7,    scale: 0.96, zDepth: 6,   zIndex: 50, opacity: 1 },
-        3:    { x: 315,  y: 42, rotate: 9.5,  scale: 0.94, zDepth: -6,  zIndex: 40, opacity: 1 },
-        4:    { x: 360,  y: 50, rotate: 9.5,  scale: 0.91, zDepth: -32, zIndex: 20, opacity: 0 },
-        [-1]: { x: -105, y: 14, rotate: -3.5, scale: 0.98, zDepth: 18,  zIndex: 55, opacity: 1 },
-        [-2]: { x: -210, y: 28, rotate: -7,   scale: 0.96, zDepth: 6,   zIndex: 45, opacity: 1 },
-        [-3]: { x: -315, y: 42, rotate: -9.5, scale: 0.94, zDepth: -6,  zIndex: 35, opacity: 1 },
-        [-4]: { x: -360, y: 50, rotate: -9.5, scale: 0.91, zDepth: -32, zIndex: 20, opacity: 0 }
+        0:    { x: 0,    y: 0,  rotate: 0, scale: 1,    zDepth: 34,  zIndex: 70, opacity: 1 },
+        1:    { x: 105,  y: 14, rotate: 0, scale: 0.98, zDepth: 18,  zIndex: 60, opacity: 1 },
+        2:    { x: 210,  y: 28, rotate: 0, scale: 0.96, zDepth: 6,   zIndex: 50, opacity: 1 },
+        3:    { x: 315,  y: 42, rotate: 0, scale: 0.94, zDepth: -6,  zIndex: 40, opacity: 1 },
+        4:    { x: 360,  y: 50, rotate: 0, scale: 0.91, zDepth: -32, zIndex: 20, opacity: 0 },
+        [-1]: { x: -105, y: 14, rotate: 0, scale: 0.98, zDepth: 18,  zIndex: 55, opacity: 1 },
+        [-2]: { x: -210, y: 28, rotate: 0, scale: 0.96, zDepth: 6,   zIndex: 45, opacity: 1 },
+        [-3]: { x: -315, y: 42, rotate: 0, scale: 0.94, zDepth: -6,  zIndex: 35, opacity: 1 },
+        [-4]: { x: -360, y: 50, rotate: 0, scale: 0.91, zDepth: -32, zIndex: 20, opacity: 0 }
       };
     }
 
     let outerX = 530;
-    let outerRotate = 8.5;
 
     if (width <= 1280) {
       outerX = 465;
-      outerRotate = 6.2;
     } else if (width <= 1366) {
       outerX = 500;
-      outerRotate = 7.2;
     }
 
     const exitX = Math.round(outerX + (outerX - 410) * 0.9);
-    const exitRotate = +(outerRotate + 2.0).toFixed(1);
 
     return {
-      0:    { x: 0,       y: 0,  rotate: 0,            scale: 1,    zDepth: 34,  zIndex: 70, opacity: 1 },
-      1:    { x: 205,     y: 14, rotate: 3.5,          scale: 0.98, zDepth: 18,  zIndex: 60, opacity: 1 },
-      2:    { x: 410,     y: 28, rotate: 7,            scale: 0.96, zDepth: 6,   zIndex: 50, opacity: 1 },
-      3:    { x: outerX,  y: 42, rotate: outerRotate,  scale: 0.94, zDepth: -6,  zIndex: 40, opacity: 1 },
-      4:    { x: exitX,   y: 54, rotate: exitRotate,   scale: 0.91, zDepth: -20, zIndex: 25, opacity: 0 },
-      [-1]: { x: -205,    y: 14, rotate: -3.5,         scale: 0.98, zDepth: 18,  zIndex: 55, opacity: 1 },
-      [-2]: { x: -410,    y: 28, rotate: -7,           scale: 0.96, zDepth: 6,   zIndex: 45, opacity: 1 },
-      [-3]: { x: -outerX, y: 42, rotate: -outerRotate, scale: 0.94, zDepth: -6,  zIndex: 35, opacity: 1 },
-      [-4]: { x: -exitX,  y: 54, rotate: -exitRotate,  scale: 0.91, zDepth: -20, zIndex: 25, opacity: 0 }
+      0:    { x: 0,       y: 0,  rotate: 0, scale: 1,    zDepth: 34,  zIndex: 70, opacity: 1 },
+      1:    { x: 205,     y: 14, rotate: 0, scale: 0.98, zDepth: 18,  zIndex: 60, opacity: 1 },
+      2:    { x: 410,     y: 28, rotate: 0, scale: 0.96, zDepth: 6,   zIndex: 50, opacity: 1 },
+      3:    { x: outerX,  y: 42, rotate: 0, scale: 0.94, zDepth: -6,  zIndex: 40, opacity: 1 },
+      4:    { x: exitX,   y: 54, rotate: 0, scale: 0.91, zDepth: -20, zIndex: 25, opacity: 0 },
+      [-1]: { x: -205,    y: 14, rotate: 0, scale: 0.98, zDepth: 18,  zIndex: 55, opacity: 1 },
+      [-2]: { x: -410,    y: 28, rotate: 0, scale: 0.96, zDepth: 6,   zIndex: 45, opacity: 1 },
+      [-3]: { x: -outerX, y: 42, rotate: 0, scale: 0.94, zDepth: -6,  zIndex: 35, opacity: 1 },
+      [-4]: { x: -exitX,  y: 54, rotate: 0, scale: 0.91, zDepth: -20, zIndex: 25, opacity: 0 }
     };
   }
 

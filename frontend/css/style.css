@@ -13,9 +13,32 @@
   --ink: #171717;
   --text-muted: #74343b;
   --shadow: rgba(227, 19, 36, 0.14);
-  --radius-lg: 28px;
-  --radius-md: 20px;
-  --radius-sm: 12px;
+
+  /* Consolidated Corner Radii System (Issue 3) */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+
+  /* Standardized Type Scale Tokens (Issue 1) */
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-md: 18px;
+  --text-lg: 22px;
+  --text-xl: 30px;
+  --text-2xl: 50px;
+  --text-title: clamp(48px, 5.2vw, 82px);
+  --text-hero: clamp(48px, 6vw, 92px);
+
+  /* Consolidated Text Colors System (Issue 2) */
+  --color-text-primary: #171717;
+  --color-text-secondary: #74343b;
+  --color-text-muted: #95313b;
+  --color-text-brand: #e31324;
+  --color-text-inverse: #ffffff;
+  --color-text-inverse-sub: #ffecef;
+
   --container: 1380px;
 }
 
@@ -872,10 +895,12 @@ button {
 }
 
 .case-card {
+  position: relative;
+  cursor: pointer;
   padding: 18px;
   overflow: hidden;
   border: 1px solid #f1c0c6;
-  border-radius: 22px;
+  border-radius: var(--radius-md);
   background: var(--white);
   color: #41181d;
   transition:
@@ -970,8 +995,15 @@ button {
 
 .case-card > a {
   color: var(--red);
-  font-size: 11px;
+  font-size: var(--text-xs);
   font-weight: 800;
+}
+
+.case-card > a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
 }
 
 /* ---------------------------------------------------------
@@ -1209,20 +1241,49 @@ button {
   gap: 14px;
 }
 
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.form-field-full {
+  grid-column: 1 / -1;
+}
+
+.form-label {
+  font-size: var(--text-xs, 12px);
+  font-weight: 700;
+  color: #74343b;
+  letter-spacing: 0.02em;
+}
+
+.required-star {
+  color: var(--red);
+}
+
 .form-grid input,
 .form-grid textarea {
   width: 100%;
-  padding: 15px;
+  padding: 13px 15px;
   border: 1px solid #efb5bb;
-  border-radius: 12px;
+  border-radius: var(--radius-sm, 8px);
   outline: none;
   background: var(--white);
   color: #751d27;
+  font-size: var(--text-sm, 14px);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-grid input:focus,
+.form-grid textarea:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(227, 19, 36, 0.12);
 }
 
 .form-grid textarea {
-  grid-column: 1 / -1;
-  min-height: 130px;
+  min-height: 120px;
   resize: vertical;
 }
 
@@ -1442,8 +1503,8 @@ body.talk-modal-open {
   gap: 25px;
   border-top: 1px solid var(--red-line);
   background: var(--white);
-  color: #7e3942;
-  font-size: 11px;
+  color: var(--color-text-secondary, #74343b);
+  font-size: var(--text-sm, 14px);
 }
 
 .footer-nav {
