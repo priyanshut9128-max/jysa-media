@@ -8,6 +8,13 @@
       "destination": "/api"
     }
   ],
+  "redirects": [
+    {
+      "source": "/pages/services/(.*)",
+      "destination": "/services/$1",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
