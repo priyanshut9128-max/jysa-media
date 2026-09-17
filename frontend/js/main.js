@@ -221,9 +221,6 @@ if (servicesStack) {
   const stackCards = [...servicesStack.querySelectorAll(".service-stack-card")];
   const stackCount = stackCards.length;
   let activeServiceIndex = 0;
-  let touchStartX = null;
-  let touchStartY = null;
-  let isSwiping = false;
   let isCursorTargeting = false;
   let isSectionInView = false;
   let pendingTargetCardIndex = null;
@@ -231,6 +228,19 @@ if (servicesStack) {
   let autoTimer = null;
   let activeGhosts = [];
   let transitionCleanupTimer = null;
+
+  // Mobile continuous drag tracking state
+  let touchActive = false;
+  let isDragging = false;
+  let hasDragged = false;
+  let dragStartX = 0;
+  let dragStartY = 0;
+  let lastTouchX = 0;
+  let lastTouchTime = 0;
+  let touchVelocityX = 0;
+  let startActiveIndex = 0;
+  let isLockedHorizontal = false;
+  let isLockedVertical = false;
 
   const AUTO_HOLD_MS = 3800; // 2.6s reading hold + 1.2s smooth transition
 
@@ -345,6 +355,109 @@ if (servicesStack) {
     element.style.boxShadow = isActive
       ? "0 26px 52px rgba(227, 19, 36, 0.16), 0 0 0 1px rgba(227, 19, 36, 0.05)"
       : "0 14px 30px rgba(227, 19, 36, 0.07)";
+  }
+
+  /**
+   * Interpolates slot properties between two discrete slots for fluid continuous dragging.
+   */
+  function interpolateSlotData(slotA, slotB, t) {
+    return {
+      x: slotA.x + (slotB.x - slotA.x) * t,
+      y: slotA.y + (slotB.y - slotA.y) * t,
+      rotate: slotA.rotate + (slotB.rotate - slotA.rotate) * t,
+      scale: slotA.scale + (slotB.scale - slotA.scale) * t,
+      zDepth: slotA.zDepth + (slotB.zDepth - slotA.zDepth) * t,
+      opacity: slotA.opacity + (slotB.opacity - slotA.opacity) * t
+    };
+  }
+
+  /**
+   * Calculates interpolated slot styling for any fractional slot index s in [-4, 4].
+   */
+  function getContinuousSlotData(slots, s) {
+    const clampedS = Math.max(-4, Math.min(4, s));
+    const lower = Math.floor(clampedS);
+    const upper = Math.ceil(clampedS);
+    if (lower === upper) {
+      return slots[lower] || slots[0];
+    }
+    const t = clampedS - lower;
+    const slotA = slots[lower] || slots[-4];
+    const slotB = slots[upper] || slots[4];
+    return interpolateSlotData(slotA, slotB, t);
+  }
+
+  /**
+   * Updates all cards continuously to match finger movement without transitions or jitter.
+   */
+  function renderContinuousDeck(virtualActiveIndex) {
+    const slots = getSlotDefinitions();
+    stackCards.forEach((card, i) => {
+      const rawOffset = i - virtualActiveIndex;
+      let s = ((rawOffset % 7) + 7) % 7;
+      if (s >= 3.5) s -= 7;
+
+      const slotData = getContinuousSlotData(slots, s);
+      const distFromCenter = Math.abs(s);
+
+      card.style.transition = "none";
+      const zIndex = Math.max(10, Math.round(70 - distFromCenter * 12 + (s > 0 ? 1 : 0)));
+      card.style.zIndex = String(zIndex);
+      card.style.opacity = String(slotData.opacity);
+      card.style.transform = `
+        translate3d(calc(-50% + ${slotData.x.toFixed(2)}px), calc(-50% + ${slotData.y.toFixed(2)}px), ${slotData.zDepth.toFixed(2)}px)
+        rotateZ(${slotData.rotate.toFixed(2)}deg)
+        rotateX(0deg)
+        rotateY(0deg)
+        scale(${slotData.scale.toFixed(4)})
+      `;
+      const isActive = distFromCenter < 0.45;
+      card.style.boxShadow = isActive
+        ? "0 26px 52px rgba(227, 19, 36, 0.16), 0 0 0 1px rgba(227, 19, 36, 0.05)"
+        : "0 14px 30px rgba(227, 19, 36, 0.07)";
+    });
+  }
+
+  /**
+   * Smoothly settles the nearest card into the front/center position upon gesture release.
+   */
+  function settleToCard(targetIndex) {
+    const normalizedTarget = ((targetIndex % stackCount) + stackCount) % stackCount;
+    activeServiceIndex = normalizedTarget;
+    const slots = getSlotDefinitions();
+
+    clearGhosts();
+
+    stackCards.forEach((card, i) => {
+      const targetSlot = getSlotForCard(i, activeServiceIndex);
+      const slotData = slots[targetSlot];
+
+      card.style.transition =
+        "transform 0.45s cubic-bezier(0.22, 0.78, 0.2, 1), opacity 0.45s cubic-bezier(0.22, 0.78, 0.2, 1), box-shadow 0.45s ease";
+      card.style.zIndex = String(slotData.zIndex);
+      card.style.opacity = String(slotData.opacity);
+      card.style.transform = `
+        translate3d(calc(-50% + ${slotData.x}px), calc(-50% + ${slotData.y}px), ${slotData.zDepth}px)
+        rotateZ(${slotData.rotate}deg)
+        rotateX(0deg)
+        rotateY(0deg)
+        scale(${slotData.scale})
+      `;
+      const isActive = slotData.zIndex === 70;
+      card.style.boxShadow = isActive
+        ? "0 26px 52px rgba(227, 19, 36, 0.16), 0 0 0 1px rgba(227, 19, 36, 0.05)"
+        : "0 14px 30px rgba(227, 19, 36, 0.07)";
+    });
+
+    if (transitionCleanupTimer) {
+      window.clearTimeout(transitionCleanupTimer);
+    }
+    transitionCleanupTimer = window.setTimeout(() => {
+      stackCards.forEach((card) => {
+        card.style.transition = "";
+      });
+      transitionCleanupTimer = null;
+    }, 460);
   }
 
   function clearGhosts() {
@@ -510,12 +623,12 @@ if (servicesStack) {
 
   function scheduleNextCycle(delay = AUTO_HOLD_MS) {
     stopAutoCycle();
-    if (!isSectionInView || isCursorTargeting || isSwiping || document.hidden) {
+    if (!isSectionInView || isCursorTargeting || isDragging || touchActive || document.hidden) {
       return;
     }
 
     autoTimer = window.setTimeout(() => {
-      if (!isSectionInView || isCursorTargeting || isSwiping || document.hidden) {
+      if (!isSectionInView || isCursorTargeting || isDragging || touchActive || document.hidden) {
         return;
       }
       setActiveService(activeServiceIndex + 1);
@@ -624,54 +737,147 @@ if (servicesStack) {
   stackStage.addEventListener("pointerleave", handlePointerLeave);
   servicesStack.addEventListener("pointerleave", handlePointerLeave);
 
-  // Touch swipe interactions
+  // Touch continuous drag interactions (mobile & tablet)
   stackStage.addEventListener("pointerdown", (event) => {
-    if (event.pointerType === "touch") {
-      touchStartX = event.clientX;
-      touchStartY = event.clientY;
-      isSwiping = true;
-      stopAutoCycle();
+    if (event.pointerType !== "touch" && event.pointerType !== "pen") {
+      return;
+    }
+    touchActive = true;
+    isDragging = false;
+    hasDragged = false;
+    isLockedHorizontal = false;
+    isLockedVertical = false;
+    dragStartX = event.clientX;
+    dragStartY = event.clientY;
+    lastTouchX = event.clientX;
+    lastTouchTime = performance.now();
+    touchVelocityX = 0;
+    startActiveIndex = activeServiceIndex;
+    stopAutoCycle();
+    if (transitionCleanupTimer) {
+      window.clearTimeout(transitionCleanupTimer);
+      transitionCleanupTimer = null;
     }
   });
 
-  stackStage.addEventListener("pointerup", (event) => {
-    if (event.pointerType !== "touch" || touchStartX === null) {
+  stackStage.addEventListener("pointermove", (event) => {
+    if (!touchActive || (event.pointerType !== "touch" && event.pointerType !== "pen")) {
       return;
     }
 
-    const deltaX = event.clientX - touchStartX;
-    const deltaY = event.clientY - (touchStartY || event.clientY);
+    const deltaX = event.clientX - dragStartX;
+    const deltaY = event.clientY - dragStartY;
 
-    if (Math.abs(deltaX) > 25 && Math.abs(deltaX) > Math.abs(deltaY)) {
-      setActiveService(activeServiceIndex + (deltaX < 0 ? 1 : -1));
+    if (!isLockedHorizontal && !isLockedVertical) {
+      const absX = Math.abs(deltaX);
+      const absY = Math.abs(deltaY);
+      if (absY > 7 && absY > absX) {
+        // Yield immediately to normal vertical page scrolling
+        isLockedVertical = true;
+        touchActive = false;
+        if (isSectionInView) {
+          startAutoCycle(AUTO_HOLD_MS);
+        }
+        return;
+      } else if (absX > 7 && absX >= absY) {
+        isLockedHorizontal = true;
+        isDragging = true;
+        hasDragged = true;
+        try {
+          stackStage.setPointerCapture(event.pointerId);
+        } catch (_) {}
+      }
     }
 
-    touchStartX = null;
-    touchStartY = null;
-    isSwiping = false;
+    if (!isLockedHorizontal) {
+      return;
+    }
 
+    // Track horizontal velocity for flick detection
+    const now = performance.now();
+    const dt = now - lastTouchTime;
+    if (dt > 8) {
+      touchVelocityX = (event.clientX - lastTouchX) / dt;
+      lastTouchX = event.clientX;
+      lastTouchTime = now;
+    }
+
+    const sensitivity = Math.max(100, Math.min(window.innerWidth * 0.35, 140));
+    // Finger LEFT (deltaX < 0) => progress positive => cards move LEFT, next card comes toward FRONT/CENTER
+    // Finger RIGHT (deltaX > 0) => progress negative => cards move RIGHT, prev card comes toward FRONT/CENTER
+    const progress = -deltaX / sensitivity;
+    const virtualActiveIndex = startActiveIndex + progress;
+
+    renderContinuousDeck(virtualActiveIndex);
+  });
+
+  function handleTouchEnd(event) {
+    if (!touchActive && !isDragging) {
+      return;
+    }
+
+    try {
+      if (stackStage.hasPointerCapture(event.pointerId)) {
+        stackStage.releasePointerCapture(event.pointerId);
+      }
+    } catch (_) {}
+
+    if (isDragging) {
+      const deltaX = event.clientX - dragStartX;
+      const sensitivity = Math.max(100, Math.min(window.innerWidth * 0.35, 140));
+      const progress = -deltaX / sensitivity;
+      let targetVirtualIndex = startActiveIndex + progress;
+
+      // Check for quick flick gesture
+      if (Math.abs(touchVelocityX) > 0.32 && Math.abs(deltaX) > 15) {
+        const flickBonus = touchVelocityX < 0 ? 0.45 : -0.45;
+        targetVirtualIndex += flickBonus;
+      }
+
+      const nearestCard = Math.round(targetVirtualIndex);
+      settleToCard(nearestCard);
+    } else {
+      settleToCard(activeServiceIndex);
+    }
+
+    touchActive = false;
+    isDragging = false;
+    isLockedHorizontal = false;
+    isLockedVertical = false;
+
+    setTimeout(() => {
+      hasDragged = false;
+    }, 100);
+
+    if (isSectionInView) {
+      startAutoCycle(AUTO_HOLD_MS);
+    }
+  }
+
+  stackStage.addEventListener("pointerup", handleTouchEnd);
+  stackStage.addEventListener("pointercancel", (event) => {
+    try {
+      if (stackStage.hasPointerCapture(event.pointerId)) {
+        stackStage.releasePointerCapture(event.pointerId);
+      }
+    } catch (_) {}
+
+    settleToCard(activeServiceIndex);
+    touchActive = false;
+    isDragging = false;
+    hasDragged = false;
+    isLockedHorizontal = false;
+    isLockedVertical = false;
     if (isSectionInView) {
       startAutoCycle(AUTO_HOLD_MS);
     }
   });
 
-  stackStage.addEventListener("pointercancel", (event) => {
-    if (event.pointerType === "touch") {
-      touchStartX = null;
-      touchStartY = null;
-      isSwiping = false;
-      if (isSectionInView) {
-        startAutoCycle(AUTO_HOLD_MS);
-      }
-    }
-  });
-
   stackCards.forEach((card, cardIndex) => {
     card.addEventListener("click", (event) => {
-      if (isSwiping) {
+      if (hasDragged || isDragging) {
         event.preventDefault();
         event.stopPropagation();
-        isSwiping = false;
         return;
       }
 
@@ -695,7 +901,7 @@ if (servicesStack) {
     (entries) => {
       entries.forEach((entry) => {
         isSectionInView = entry.isIntersecting;
-        if (isSectionInView && !isCursorTargeting && !isSwiping) {
+        if (isSectionInView && !isCursorTargeting && !isDragging && !touchActive) {
           startAutoCycle(AUTO_HOLD_MS);
         } else {
           stopAutoCycle();
@@ -711,7 +917,7 @@ if (servicesStack) {
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
       stopAutoCycle();
-    } else if (isSectionInView && !isCursorTargeting && !isSwiping) {
+    } else if (isSectionInView && !isCursorTargeting && !isDragging && !touchActive) {
       startAutoCycle(AUTO_HOLD_MS);
     }
   });

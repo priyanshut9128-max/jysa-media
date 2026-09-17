@@ -706,12 +706,18 @@ button {
   border: 3px solid var(--red);
   background: var(--white);
   color: var(--red);
+  text-decoration: none;
+  cursor: pointer;
   font-family: "Space Grotesk", sans-serif;
   font-size: 36px;
   font-weight: 700;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   user-select: none;
+}
+
+.cube-face:hover {
+  color: var(--red-dark);
 }
 
 .cube-front { transform: translateZ(95px); }
@@ -758,6 +764,7 @@ button {
   perspective: 1600px;
   transform-style: preserve-3d;
   overflow: visible;
+  touch-action: pan-y;
 }
 
 .service-card.service-stack-card {
