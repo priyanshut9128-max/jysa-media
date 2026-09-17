@@ -5,7 +5,7 @@
   "description": "JYSA Media — Modern Digital Marketing Agency Website & API",
   "main": "backend/server.js",
   "engines": {
-    "node": ">=18.0.0"
+    "node": "24.x"
   },
   "scripts": {
     "start": "node backend/server.js",
