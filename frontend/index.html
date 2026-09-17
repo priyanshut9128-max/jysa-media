@@ -7,14 +7,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#e31324">
-  <title>JYSA Media — Digital Marketing &amp; Growth Agency</title>
+  <title>JYSA Media — Strategic Digital Marketing &amp; Growth Agency</title>
   <meta name="description" content="JYSA Media is a full-stack digital marketing agency combining strategy, creativity, technology and performance to grow ambitious brands.">
   <link rel="canonical" href="https://www.jysamedia.in/">
 
   <!-- Open Graph / Facebook / WhatsApp / LinkedIn -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.jysamedia.in/">
-  <meta property="og:title" content="JYSA Media — Digital Marketing &amp; Growth Agency">
+  <meta property="og:title" content="JYSA Media — Strategic Digital Marketing &amp; Growth Agency">
   <meta property="og:description" content="Strategy, creativity, media, technology and performance — built to grow ambitious brands.">
   <meta property="og:image" content="https://www.jysamedia.in/assets/og-image.jpg">
   <meta property="og:image:secure_url" content="https://www.jysamedia.in/assets/og-image.jpg">
@@ -27,7 +27,7 @@
   <!-- Twitter / X -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://www.jysamedia.in/">
-  <meta name="twitter:title" content="JYSA Media — Digital Marketing &amp; Growth Agency">
+  <meta name="twitter:title" content="JYSA Media — Strategic Digital Marketing &amp; Growth Agency">
   <meta name="twitter:description" content="Strategy, creativity, media, technology and performance — built to grow ambitious brands.">
   <meta name="twitter:image" content="https://www.jysamedia.in/assets/og-image.jpg">
   <meta name="twitter:image:alt" content="JYSA Media — Full-Stack Digital Marketing &amp; Growth Agency">
@@ -58,21 +58,58 @@
         "publisher": {
           "@id": "https://www.jysamedia.in/#organization"
         }
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://www.jysamedia.in/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What services does JYSA Media provide?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "JYSA Media provides comprehensive digital marketing and growth services, including social media marketing, branding and creative direction, performance marketing across Meta and Google Ads, content marketing, influencer marketing, website design, and search engine optimization (SEO)."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Who does JYSA Media work with?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "We partner with ambitious brands, modern businesses, and growth-focused companies across diverse sectors including e-commerce, healthcare, professional services, and emerging enterprises seeking measurable digital scale."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What does the engagement process look like?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Our engagement begins with discovery and performance audits to evaluate your current digital presence, followed by strategic planning, creative execution, cross-channel deployment, and continuous conversion rate optimization with transparent reporting."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does JYSA Media approach digital growth?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "We combine data-driven performance analytics with creative storytelling and technical web architecture, ensuring every marketing channel reinforces your brand equity and directly drives customer acquisition and retention."
+            }
+          }
+        ]
       }
     ]
   }
   </script>
 
-  <!-- Typography & Fonts -->
+  <!-- Typography & Fonts (Non-blocking) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
-    rel="stylesheet"
-  >
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"></noscript>
 
   <!-- Global Stylesheet -->
-  <link rel="stylesheet" href="css/style.min.css?v=31">
+  <link rel="stylesheet" href="css/style.min.css?v=32">
 </head>
 
 <body>
@@ -226,6 +263,11 @@
               We bring strategy, creative, media, technology and analytics under
               one roof — so your marketing feels like one connected growth engine.
             </p>
+            <p>
+              From conversion-focused web architecture and organic search visibility
+              to high-ROI paid media and compelling brand storytelling, our team aligns
+              every digital touchpoint with clear business KPIs and measurable revenue impact.
+            </p>
             <a class="button button-red" href="/pages/about">More About JYSA →</a>
           </div>
         </div>
@@ -265,6 +307,11 @@
           <p>
             From strategy to execution, JYSA handles the digital ecosystem —
             with creative thinking and measurable performance.
+          </p>
+          <p>
+            We build integrated campaigns across social media, search optimization,
+            targeted paid advertising, and high-performance websites engineered to
+            convert traffic into long-term customer value.
           </p>
         </div>
       </div>
@@ -396,7 +443,10 @@
         <article class="case-card reveal">
           <div class="case-visual">
             <span class="case-badge">E-COMMERCE</span>
-            <img class="growth-image" src="assets/growth-ecommerce.jpg" alt="E-commerce digital marketing visual">
+            <picture>
+              <source type="image/avif" srcset="assets/growth-ecommerce.avif">
+              <img class="growth-image" src="assets/growth-ecommerce.jpg" width="600" height="450" alt="E-commerce digital marketing visual" loading="lazy" decoding="async">
+            </picture>
           </div>
           <strong>+184%</strong>
           <p>Increase in revenue</p>
@@ -406,7 +456,10 @@
         <article class="case-card reveal">
           <div class="case-visual">
             <span class="case-badge">HEALTHCARE</span>
-            <img class="growth-image" src="assets/growth-healthcare.jpg" alt="Healthcare digital marketing visual">
+            <picture>
+              <source type="image/avif" srcset="assets/growth-healthcare.avif">
+              <img class="growth-image" src="assets/growth-healthcare.jpg" width="600" height="450" alt="Healthcare digital marketing visual" loading="lazy" decoding="async">
+            </picture>
           </div>
           <strong>3.8X</strong>
           <p>More qualified appointments</p>
@@ -416,7 +469,10 @@
         <article class="case-card reveal">
           <div class="case-visual">
             <span class="case-badge">CONSTRUCTION</span>
-            <img class="growth-image" src="assets/growth-construction.jpg" alt="Construction digital marketing visual">
+            <picture>
+              <source type="image/avif" srcset="assets/growth-construction.avif">
+              <img class="growth-image" src="assets/growth-construction.jpg" width="600" height="450" alt="Construction digital marketing visual" loading="lazy" decoding="async">
+            </picture>
           </div>
           <strong>+220%</strong>
           <p>Qualified lead growth</p>
@@ -467,6 +523,54 @@
     </section>
 
     <!-- -----------------------------------------
+         FAQ SECTION (#faq)
+    ----------------------------------------- -->
+    <section class="section section-white faq-section" id="faq">
+      <div class="reveal">
+        <p class="eyebrow"><span class="dot"></span>FAQ</p>
+        <h2 class="section-title">
+          Frequently Asked
+          <br>
+          <span class="text-red">Questions.</span>
+        </h2>
+      </div>
+
+      <div class="faq-grid">
+        <article class="faq-item reveal">
+          <h3 class="faq-question">What services does JYSA Media provide?</h3>
+          <p class="faq-answer">
+            JYSA Media provides comprehensive digital marketing and growth services, including social media marketing, branding and creative direction, performance marketing across Meta and Google Ads, content marketing, influencer marketing, website design, and search engine optimization (SEO).
+          </p>
+        </article>
+
+        <article class="faq-item reveal">
+          <h3 class="faq-question">Who does JYSA Media work with?</h3>
+          <p class="faq-answer">
+            We partner with ambitious brands, modern businesses, and growth-focused companies across diverse sectors including e-commerce, healthcare, professional services, and emerging enterprises seeking measurable digital scale.
+          </p>
+        </article>
+
+        <article class="faq-item reveal">
+          <h3 class="faq-question">What does the engagement process look like?</h3>
+          <p class="faq-answer">
+            Our engagement begins with discovery and performance audits to evaluate your current digital presence, followed by strategic planning, creative execution, cross-channel deployment, and continuous conversion rate optimization with transparent reporting.
+          </p>
+        </article>
+
+        <article class="faq-item reveal">
+          <h3 class="faq-question">How does JYSA Media approach digital growth?</h3>
+          <p class="faq-answer">
+            We combine data-driven performance analytics with creative storytelling and technical web architecture, ensuring every marketing channel reinforces your brand equity and directly drives customer acquisition and retention.
+          </p>
+        </article>
+      </div>
+
+      <div class="section-transition-line" aria-hidden="true">
+        <span></span>
+      </div>
+    </section>
+
+    <!-- -----------------------------------------
          CONTACT SECTION (#contact)
     ----------------------------------------- -->
     <section class="section section-red contact" id="contact">
@@ -499,7 +603,7 @@
       </div>
 
       <form class="contact-form reveal" id="contactForm">
-        <input type="text" name="_hp_check" style="display:none !important; position:absolute; left:-9999px; width:0; height:0;" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <input type="text" name="_hp_check" class="sr-honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
         <div class="form-grid">
           <div class="form-field">
             <label for="contact-name" class="form-label">Name <span class="required-star" aria-hidden="true">*</span></label>
@@ -570,7 +674,7 @@
         <span>hello@jysamedia.in</span>
       </a>
       <form class="talk-modal-form" id="talkModalForm">
-        <input type="text" name="_hp_check" style="display:none !important; position:absolute; left:-9999px; width:0; height:0;" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <input type="text" name="_hp_check" class="sr-honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
         <input type="text" name="name" placeholder="Name *" required maxlength="100" autocomplete="name">
         <input type="tel" name="phone" placeholder="Mobile Number *" required maxlength="20" pattern="[0-9+\s\-()]{7,20}" title="Please enter a valid mobile number (7–20 digits)" autocomplete="tel">
         <input type="email" name="email" placeholder="Email *" required maxlength="254" autocomplete="email">
@@ -583,6 +687,6 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/main.min.js?v=31"></script>
+  <script defer src="js/main.min.js?v=32"></script>
 </body>
 </html>

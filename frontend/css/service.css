@@ -177,6 +177,13 @@ h1 {
   font-weight: 800;
 }
 
+.hero-actions-wrap {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
 .detail-grid {
   padding: 10px 0 70px;
   display: grid;

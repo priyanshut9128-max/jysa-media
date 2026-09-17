@@ -637,3 +637,14 @@ body.talk-modal-open {
   overflow: hidden;
 }
 
+.card strong a,
+.detail-card-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.contact-link {
+  color: inherit;
+  font-weight: 700;
+}
+

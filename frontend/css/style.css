@@ -1406,6 +1406,83 @@ button {
   font-size: 11px;
 }
 
+.sr-honeypot {
+  display: none !important;
+  position: absolute !important;
+  left: -9999px !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* ---------------------------------------------------------
+   FAQ Section (#faq)
+   --------------------------------------------------------- */
+
+.faq-section {
+  padding: 95px 6vw;
+}
+
+.faq-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 45px;
+}
+
+.faq-item {
+  border: 1px solid var(--red-line);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  padding: 28px 30px;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.faq-item:hover {
+  border-color: var(--red);
+  box-shadow: 0 10px 30px var(--shadow);
+}
+
+.faq-question {
+  margin: 0 0 12px;
+  color: var(--ink);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.faq-answer {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+@media (max-width: 760px) {
+  .faq-section {
+    padding: 70px 20px;
+  }
+
+  .faq-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 30px;
+  }
+
+  .faq-item {
+    padding: 20px 22px;
+  }
+
+  .faq-question {
+    font-size: 18px;
+  }
+
+  .faq-answer {
+    font-size: 14px;
+  }
+}
+
 /* ---------------------------------------------------------
    Let's Talk modal
    --------------------------------------------------------- */
