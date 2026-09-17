@@ -74,12 +74,28 @@ const server = http.createServer((req, res) => {
   res.end('<h1>404 Not Found</h1>');
 });
 
+function getVercelHeaders() {
+  try {
+    const vjson = JSON.parse(fs.readFileSync(path.resolve(__dirname, '..', 'vercel.json'), 'utf8'));
+    const headers = {};
+    if (vjson.headers && vjson.headers[0] && vjson.headers[0].headers) {
+      vjson.headers[0].headers.forEach(h => {
+        headers[h.key] = h.value;
+      });
+    }
+    return headers;
+  } catch (e) {
+    return {};
+  }
+}
+
 function serveFile(filePath, res) {
   const ext = path.extname(filePath).toLowerCase();
   const contentType = MIME_TYPES[ext] || 'application/octet-stream';
   res.writeHead(200, {
     'Content-Type': contentType,
-    'Access-Control-Allow-Origin': '*'
+    'Access-Control-Allow-Origin': '*',
+    ...getVercelHeaders()
   });
   fs.createReadStream(filePath).pipe(res);
 }
