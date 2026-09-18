@@ -327,11 +327,11 @@
 
       <div class="services-stack" data-services-stack aria-label="JYSA Media services">
         <div class="services-stack-stage">
-          <a class="service-card service-stack-card reveal" href="/services/social-media" data-service-index="0" aria-label="Open Social Media Marketing service page">
-            <span class="service-number">01</span>
+          <a class="service-card service-stack-card reveal" href="/services/social-media" data-service-index="0" aria-label="Social Media Marketing">
+            <span class="service-number" aria-hidden="true">01</span>
             <div class="service-icon" aria-hidden="true">♥</div>
             <h3>Social Media<br>Marketing</h3>
-            <ul class="service-list">
+            <ul class="service-list" aria-hidden="true">
               <li>Instagram &amp; Facebook Management</li>
               <li>Content Strategy</li>
               <li>Reels &amp; Static Content</li>
@@ -340,11 +340,11 @@
             </ul>
           </a>
 
-          <a class="service-card service-stack-card reveal" href="/services/branding-creative" data-service-index="1" aria-label="Open Branding &amp; Creative service page">
-            <span class="service-number">02</span>
+          <a class="service-card service-stack-card reveal" href="/services/branding-creative" data-service-index="1" aria-label="Branding &amp; Creative">
+            <span class="service-number" aria-hidden="true">02</span>
             <div class="service-icon" aria-hidden="true">✦</div>
             <h3>Branding &amp;<br>Creative</h3>
-            <ul class="service-list">
+            <ul class="service-list" aria-hidden="true">
               <li>Brand Strategy</li>
               <li>Visual Identity</li>
               <li>Creative Direction</li>
@@ -353,8 +353,8 @@
             </ul>
           </a>
 
-          <a class="service-card service-stack-card reveal" href="/services/performance-marketing" data-service-index="2" aria-label="Open Performance Marketing service page">
-            <span class="service-number">03</span>
+          <a class="service-card service-stack-card reveal" href="/services/performance-marketing" data-service-index="2" aria-label="Performance Marketing">
+            <span class="service-number" aria-hidden="true">03</span>
             <div class="service-icon service-icon-growth" aria-hidden="true">
               <svg viewBox="0 0 48 48" focusable="false">
                 <path class="growth-axis" d="M6 40h36"></path>
@@ -363,7 +363,7 @@
               </svg>
             </div>
             <h3>Performance<br>Marketing</h3>
-            <ul class="service-list">
+            <ul class="service-list" aria-hidden="true">
               <li>Meta Ads</li>
               <li>Google Ads</li>
               <li>Lead Generation Campaigns</li>
@@ -372,11 +372,11 @@
             </ul>
           </a>
 
-          <a class="service-card service-stack-card reveal" href="/services/content-marketing" data-service-index="3" aria-label="Open Content Marketing service page">
-            <span class="service-number">04</span>
+          <a class="service-card service-stack-card reveal" href="/services/content-marketing" data-service-index="3" aria-label="Content Marketing">
+            <span class="service-number" aria-hidden="true">04</span>
             <div class="service-icon" aria-hidden="true">✎</div>
             <h3>Content<br>Marketing</h3>
-            <ul class="service-list">
+            <ul class="service-list" aria-hidden="true">
               <li>Content Strategy</li>
               <li>Copywriting</li>
               <li>Reels &amp; Video Content</li>
@@ -385,11 +385,11 @@
             </ul>
           </a>
 
-          <a class="service-card service-stack-card reveal" href="/services/influencer-marketing" data-service-index="4" aria-label="Open Influencer Marketing service page">
-            <span class="service-number">05</span>
+          <a class="service-card service-stack-card reveal" href="/services/influencer-marketing" data-service-index="4" aria-label="Influencer Marketing">
+            <span class="service-number" aria-hidden="true">05</span>
             <div class="service-icon" aria-hidden="true">◆</div>
             <h3>Influencer<br>Marketing</h3>
-            <ul class="service-list">
+            <ul class="service-list" aria-hidden="true">
               <li>Influencer Discovery</li>
               <li>Creator Campaigns</li>
               <li>Influencer Partnerships</li>
@@ -398,11 +398,11 @@
             </ul>
           </a>
 
-          <a class="service-card service-stack-card reveal" href="/services/website-seo" data-service-index="5" aria-label="Open Website &amp; SEO service page">
-            <span class="service-number">06</span>
+          <a class="service-card service-stack-card reveal" href="/services/website-seo" data-service-index="5" aria-label="Website &amp; SEO">
+            <span class="service-number" aria-hidden="true">06</span>
             <div class="service-icon" aria-hidden="true">⌕</div>
             <h3>Website &amp;<br>SEO</h3>
-            <ul class="service-list">
+            <ul class="service-list" aria-hidden="true">
               <li>Website Design &amp; Development</li>
               <li>Landing Pages</li>
               <li>Search Engine Optimization</li>
@@ -411,11 +411,11 @@
             </ul>
           </a>
 
-          <a class="service-card service-stack-card reveal" href="/services/digital-strategy" data-service-index="6" aria-label="Open Digital Strategy service page">
-            <span class="service-number">07</span>
+          <a class="service-card service-stack-card reveal" href="/services/digital-strategy" data-service-index="6" aria-label="Digital Strategy">
+            <span class="service-number" aria-hidden="true">07</span>
             <div class="service-icon" aria-hidden="true">↗</div>
             <h3>Digital<br>Strategy</h3>
-            <ul class="service-list">
+            <ul class="service-list" aria-hidden="true">
               <li>Digital Brand Strategy</li>
               <li>Marketing Roadmaps</li>
               <li>Competitor Analysis</li>
@@ -423,7 +423,6 @@
               <li>Campaign Planning</li>
             </ul>
           </a>
-        </div>
       </div>
 
       <div class="section-transition-line" aria-hidden="true">
@@ -684,11 +683,16 @@
       </a>
       <form class="talk-modal-form" id="talkModalForm">
         <input type="text" name="_hp_check" class="sr-honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
-        <input type="text" name="name" placeholder="Name *" required maxlength="100" autocomplete="name">
-        <input type="tel" name="phone" placeholder="Mobile Number *" required maxlength="20" pattern="[0-9+\s\-()]{7,20}" title="Please enter a valid mobile number (7–20 digits)" autocomplete="tel">
-        <input type="email" name="email" placeholder="Email *" required maxlength="254" autocomplete="email">
-        <input type="text" name="company" placeholder="Company" maxlength="120" autocomplete="organization">
-        <textarea name="message" placeholder="How can I help you?" maxlength="3000"></textarea>
+        <label for="talkModalName" class="sr-only">Name *</label>
+        <input type="text" id="talkModalName" name="name" placeholder="Name *" required maxlength="100" autocomplete="name" aria-label="Name *">
+        <label for="talkModalPhone" class="sr-only">Mobile Number *</label>
+        <input type="tel" id="talkModalPhone" name="phone" placeholder="Mobile Number *" required maxlength="20" pattern="[0-9+\s\-()]{7,20}" title="Please enter a valid mobile number (7–20 digits)" autocomplete="tel" aria-label="Mobile Number *">
+        <label for="talkModalEmail" class="sr-only">Email *</label>
+        <input type="email" id="talkModalEmail" name="email" placeholder="Email *" required maxlength="254" autocomplete="email" aria-label="Email *">
+        <label for="talkModalCompany" class="sr-only">Company</label>
+        <input type="text" id="talkModalCompany" name="company" placeholder="Company" maxlength="120" autocomplete="organization" aria-label="Company">
+        <label for="talkModalMessage" class="sr-only">How can I help you?</label>
+        <textarea id="talkModalMessage" name="message" placeholder="How can I help you?" maxlength="3000" aria-label="How can I help you?"></textarea>
         <button class="button button-red" type="submit">SEND →</button>
         <p class="talk-modal-note" id="talkModalNote"></p>
       </form>

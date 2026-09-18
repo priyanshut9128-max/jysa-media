@@ -352,6 +352,20 @@ if (servicesStack) {
     `;
 
     const isActive = slotData.zIndex === 70;
+    element.classList.toggle("is-active-card", isActive);
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+      if (isActive) {
+        element.removeAttribute("aria-hidden");
+        element.removeAttribute("tabindex");
+      } else {
+        element.setAttribute("aria-hidden", "true");
+        element.setAttribute("tabindex", "-1");
+      }
+    } else {
+      element.removeAttribute("aria-hidden");
+      element.removeAttribute("tabindex");
+    }
     element.style.boxShadow = isActive
       ? "0 26px 52px rgba(227, 19, 36, 0.16), 0 0 0 1px rgba(227, 19, 36, 0.05)"
       : "0 14px 30px rgba(227, 19, 36, 0.07)";
@@ -444,6 +458,20 @@ if (servicesStack) {
         scale(${slotData.scale})
       `;
       const isActive = slotData.zIndex === 70;
+      card.classList.toggle("is-active-card", isActive);
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile) {
+        if (isActive) {
+          card.removeAttribute("aria-hidden");
+          card.removeAttribute("tabindex");
+        } else {
+          card.setAttribute("aria-hidden", "true");
+          card.setAttribute("tabindex", "-1");
+        }
+      } else {
+        card.removeAttribute("aria-hidden");
+        card.removeAttribute("tabindex");
+      }
       card.style.boxShadow = isActive
         ? "0 26px 52px rgba(227, 19, 36, 0.16), 0 0 0 1px rgba(227, 19, 36, 0.05)"
         : "0 14px 30px rgba(227, 19, 36, 0.07)";
@@ -478,10 +506,25 @@ if (servicesStack) {
 
   function renderInitialDeck() {
     const slots = getSlotDefinitions();
+    const isMobile = window.innerWidth <= 768;
     stackCards.forEach((card, index) => {
       card.classList.add("is-stack-card");
       const slot = getSlotForCard(index, activeServiceIndex);
       applySlotStyles(card, slots[slot], true);
+      const isActive = slot === 0;
+      card.classList.toggle("is-active-card", isActive);
+      if (isMobile) {
+        if (isActive) {
+          card.removeAttribute("aria-hidden");
+          card.removeAttribute("tabindex");
+        } else {
+          card.setAttribute("aria-hidden", "true");
+          card.setAttribute("tabindex", "-1");
+        }
+      } else {
+        card.removeAttribute("aria-hidden");
+        card.removeAttribute("tabindex");
+      }
     });
   }
 
@@ -913,6 +956,7 @@ if (servicesStack) {
 
   servicesObserver.observe(servicesStack);
 
+
   // Tab visibility listener: pause when backgrounded, resume when active
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
@@ -987,11 +1031,16 @@ function getTalkModalMarkup() {
       </a>
       <form class="talk-modal-form" id="talkModalForm">
         <input type="text" name="_hp_check" style="display:none !important; position:absolute; left:-9999px; width:0; height:0;" tabindex="-1" autocomplete="off" aria-hidden="true">
-        <input type="text" name="name" placeholder="Name *" required maxlength="100" autocomplete="name">
-        <input type="tel" name="phone" placeholder="Mobile Number *" required maxlength="20" pattern="[0-9+\\s\\-()]{7,20}" title="Please enter a valid mobile number (7–20 digits)" autocomplete="tel">
-        <input type="email" name="email" placeholder="Email *" required maxlength="254" autocomplete="email">
-        <input type="text" name="company" placeholder="Company" maxlength="120" autocomplete="organization">
-        <textarea name="message" placeholder="How can I help you?" maxlength="3000"></textarea>
+        <label for="talkModalName" class="sr-only">Name *</label>
+        <input type="text" id="talkModalName" name="name" placeholder="Name *" required maxlength="100" autocomplete="name" aria-label="Name *">
+        <label for="talkModalPhone" class="sr-only">Mobile Number *</label>
+        <input type="tel" id="talkModalPhone" name="phone" placeholder="Mobile Number *" required maxlength="20" pattern="[0-9+\\s\\-()]{7,20}" title="Please enter a valid mobile number (7–20 digits)" autocomplete="tel" aria-label="Mobile Number *">
+        <label for="talkModalEmail" class="sr-only">Email *</label>
+        <input type="email" id="talkModalEmail" name="email" placeholder="Email *" required maxlength="254" autocomplete="email" aria-label="Email *">
+        <label for="talkModalCompany" class="sr-only">Company</label>
+        <input type="text" id="talkModalCompany" name="company" placeholder="Company" maxlength="120" autocomplete="organization" aria-label="Company">
+        <label for="talkModalMessage" class="sr-only">How can I help you?</label>
+        <textarea id="talkModalMessage" name="message" placeholder="How can I help you?" maxlength="3000" aria-label="How can I help you?"></textarea>
         <button class="button button-red" type="submit">SEND →</button>
         <p class="talk-modal-note" id="talkModalNote"></p>
       </form>
