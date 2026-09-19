@@ -1,0 +1,27 @@
+# JYSA Media
+
+> Full-stack digital marketing agency combining strategy, creativity, technology, and performance to grow ambitious brands.
+
+JYSA Media (JYSA Media House Pvt. Ltd.) provides strategic digital marketing, paid advertising, branding, web design, and search engine optimization services for high-growth businesses.
+
+## Main Pages
+
+- [Homepage](https://www.jysamedia.in/): Primary agency overview, client metrics, core capabilities, and interactive showcase.
+- [About Us](https://www.jysamedia.in/pages/about): Company mission, leadership team, agency philosophy, and values.
+- [Services Overview](https://www.jysamedia.in/pages/services): Full spectrum of growth marketing, creative, and development services.
+- [Our Work](https://www.jysamedia.in/pages/work): Case studies, client success stories, and verified performance metrics.
+- [Careers](https://www.jysamedia.in/pages/careers): Open roles, agency culture, and hiring opportunities.
+- [Contact](https://www.jysamedia.in/pages/contact): Direct consultation inquiries, project discovery, and office details.
+
+## Core Services
+
+- [Performance Marketing](https://www.jysamedia.in/services/performance-marketing): Data-driven paid acquisition campaigns across Meta Ads, Google Ads, and emerging ad networks.
+- [Social Media Marketing](https://www.jysamedia.in/services/social-media): Organic and paid social strategies, community growth, and creative distribution.
+- [Branding & Creative](https://www.jysamedia.in/services/branding-creative): Brand identity, visual storytelling, messaging architecture, and creative assets.
+- [Website Design & Development](https://www.jysamedia.in/services/website-design): High-performance, conversion-optimized responsive web design and modern web development.
+- [Search Engine Optimization (SEO)](https://www.jysamedia.in/services/seo): Technical SEO audits, content strategy, on-page optimization, and organic ranking growth.
+- [Content Marketing](https://www.jysamedia.in/services/content-marketing): Multi-format content creation, editorial calendars, and brand narrative production.
+- [Digital Strategy](https://www.jysamedia.in/services/digital-strategy): Comprehensive market research, competitor benchmarking, and go-to-market roadmaps.
+- [Influencer Marketing](https://www.jysamedia.in/services/influencer-marketing): Creator collaborations, influencer campaign management, and performance partnerships.
+- [Paid Advertising](https://www.jysamedia.in/services/paid-advertising): Multi-channel paid media buying, retargeting funnels, and ROAS optimization.
+- [Website SEO](https://www.jysamedia.in/services/website-seo): Site architecture optimization, Core Web Vitals performance, and organic search visibility.
