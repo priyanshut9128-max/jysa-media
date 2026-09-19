@@ -30,25 +30,17 @@ const API_BASE =
 const pageInitTime = Date.now();
 
 /**
- * Typography: Non-blocking font stylesheet activation compliant with strict CSP.
- * Avoids inline event handlers and provides safe fallback if already loaded.
+ * Google Analytics 4 (GA4) Google tag / gtag.js:
+ * Non-blocking deferred loading to eliminate main-thread contention during the critical first render.
+ * Triggered upon first user interaction (scroll, touchstart, pointerdown, keydown)
+ * or via a safe post-load idle fallback.
+ * Preserves the existing inline dataLayer and gtag() configuration from <head>.
+ * GA4 script is injected at most once.
  */
-const googleFontsLink = document.getElementById("googleFonts");
-if (googleFontsLink) {
-  if (googleFontsLink.sheet) {
-    googleFontsLink.media = "all";
-  } else {
-    googleFontsLink.addEventListener("load", () => {
-      googleFontsLink.media = "all";
-    });
-  }
-}
-
-/**
- * Analytics: Loads GA4 gtag.js during browser idle time or post-load.
- * Preserves initial dataLayer queue and gtag configuration from <head>.
- */
+let ga4Loaded = false;
 function loadGA4() {
+  if (ga4Loaded) return;
+  ga4Loaded = true;
   if (document.querySelector('script[src*="googletagmanager.com/gtag/js"]')) {
     return;
   }
@@ -58,13 +50,20 @@ function loadGA4() {
   document.head.appendChild(script);
 }
 
-if ("requestIdleCallback" in window) {
-  requestIdleCallback(loadGA4, { timeout: 2000 });
-} else {
-  window.addEventListener("load", () => {
-    setTimeout(loadGA4, 800);
-  });
-}
+const ga4TriggerEvents = ["scroll", "touchstart", "pointerdown", "keydown"];
+ga4TriggerEvents.forEach((evt) => {
+  window.addEventListener(evt, loadGA4, { once: true, passive: true });
+});
+
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    if ("requestIdleCallback" in window) {
+      requestIdleCallback(loadGA4);
+    } else {
+      loadGA4();
+    }
+  }, 3500);
+});
 
 /* ==========================================================================
    2. HEADER & NAVIGATION (Desktop Sticky + Mobile Drawer)
@@ -187,7 +186,13 @@ window.addEventListener(
 );
 
 window.addEventListener("resize", updateSectionTransitionAnimation);
-updateSectionTransitionAnimation();
+
+// Defer initial layout calculations until after the initial paint to prevent startup forced reflow
+if ("requestIdleCallback" in window) {
+  requestIdleCallback(updateSectionTransitionAnimation);
+} else {
+  requestAnimationFrame(updateSectionTransitionAnimation);
+}
 
 /* ==========================================================================
    4. 3D INTERACTIVE CUBE (ABOUT US SECTION)
