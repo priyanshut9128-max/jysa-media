@@ -82,7 +82,11 @@ function updateHeader() {
 }
 
 window.addEventListener("scroll", updateHeader, { passive: true });
-updateHeader();
+if ("requestIdleCallback" in window) {
+  requestIdleCallback(updateHeader);
+} else {
+  requestAnimationFrame(updateHeader);
+}
 
 /**
  * Closes the mobile navigation drawer and updates aria attributes.
