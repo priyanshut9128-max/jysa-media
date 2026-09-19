@@ -29,6 +29,43 @@ const API_BASE =
 /** Page initialization timestamp for bot timing checks */
 const pageInitTime = Date.now();
 
+/**
+ * Typography: Non-blocking font stylesheet activation compliant with strict CSP.
+ * Avoids inline event handlers and provides safe fallback if already loaded.
+ */
+const googleFontsLink = document.getElementById("googleFonts");
+if (googleFontsLink) {
+  if (googleFontsLink.sheet) {
+    googleFontsLink.media = "all";
+  } else {
+    googleFontsLink.addEventListener("load", () => {
+      googleFontsLink.media = "all";
+    });
+  }
+}
+
+/**
+ * Analytics: Loads GA4 gtag.js during browser idle time or post-load.
+ * Preserves initial dataLayer queue and gtag configuration from <head>.
+ */
+function loadGA4() {
+  if (document.querySelector('script[src*="googletagmanager.com/gtag/js"]')) {
+    return;
+  }
+  const script = document.createElement("script");
+  script.async = true;
+  script.src = "https://www.googletagmanager.com/gtag/js?id=G-RQL53KWCX2";
+  document.head.appendChild(script);
+}
+
+if ("requestIdleCallback" in window) {
+  requestIdleCallback(loadGA4, { timeout: 2000 });
+} else {
+  window.addEventListener("load", () => {
+    setTimeout(loadGA4, 800);
+  });
+}
+
 /* ==========================================================================
    2. HEADER & NAVIGATION (Desktop Sticky + Mobile Drawer)
    ========================================================================== */
@@ -107,22 +144,30 @@ const transitionSections = [
 
 function updateSectionTransitionAnimation() {
   const viewportHeight = window.innerHeight;
+  const measurements = [];
 
-  transitionSections.forEach((section) => {
+  // Phase 1: Batch all layout reads without mutating styles (eliminates forced reflow)
+  for (let i = 0; i < transitionSections.length; i++) {
+    const section = transitionSections[i];
     const line = section.querySelector(".section-transition-line");
     if (!line) {
-      return;
+      continue;
     }
-
     const rect = section.getBoundingClientRect();
-    const distanceFromViewportBottom = viewportHeight - rect.bottom;
-    const transitionZone = Math.max(viewportHeight * 0.3, 180);
+    measurements.push({ line, bottom: rect.bottom });
+  }
+
+  // Phase 2: Batch all style writes with no interleaved reads
+  const transitionZone = Math.max(viewportHeight * 0.3, 180);
+  for (let i = 0; i < measurements.length; i++) {
+    const { line, bottom } = measurements[i];
+    const distanceFromViewportBottom = viewportHeight - bottom;
     const progress = Math.min(1, Math.max(0, distanceFromViewportBottom / transitionZone));
     const opacity = Math.min(1, progress * 3);
 
     line.style.setProperty("--transition-progress", progress.toFixed(3));
     line.style.setProperty("--transition-opacity", opacity.toFixed(3));
-  });
+  }
 }
 
 let sectionTransitionFrame = 0;
