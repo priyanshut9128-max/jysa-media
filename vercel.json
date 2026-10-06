@@ -18,6 +18,10 @@
     {
       "source": "/grow-together",
       "destination": "/pages/grow-together"
+    },
+    {
+      "source": "/googlefcad443a218b35cc.html",
+      "destination": "/googlefcad443a218b35cc.html"
     }
   ],
   "redirects": [
