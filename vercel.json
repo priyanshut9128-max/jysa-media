@@ -1,7 +1,6 @@
 {
   "version": 2,
   "outputDirectory": "frontend",
-  "cleanUrls": true,
   "rewrites": [
     {
       "source": "/api/(.*)",
@@ -9,18 +8,26 @@
     },
     {
       "source": "/work",
-      "destination": "/pages/work"
+      "destination": "/pages/work.html"
     },
     {
       "source": "/careers",
-      "destination": "/pages/careers"
+      "destination": "/pages/careers.html"
     },
     {
       "source": "/grow-together",
-      "destination": "/pages/grow-together"
+      "destination": "/pages/grow-together.html"
     },
     {
-      "source": "/googlefcad443a218b35cc.html",
+      "source": "/pages/:page",
+      "destination": "/pages/:page.html"
+    },
+    {
+      "source": "/services/:service",
+      "destination": "/services/:service.html"
+    },
+    {
+      "source": "/googlefcad443a218b35cc",
       "destination": "/googlefcad443a218b35cc.html"
     }
   ],
