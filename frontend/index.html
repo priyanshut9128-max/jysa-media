@@ -140,8 +140,8 @@
     <nav class="site-nav" id="siteNav" aria-label="Primary navigation">
       <a href="#about">ABOUT US</a>
       <a href="#services">SERVICES</a>
-      <a href="#work">OUR WORK</a>
-      <a href="#careers">CAREERS</a>
+      <a href="/pages/work">OUR WORK</a>
+      <a href="/pages/careers">CAREERS</a>
       <a href="#contact">CONTACT US</a>
       <button class="nav-talk-cta talk-btn" type="button">LET'S TALK <span aria-hidden="true">↗</span></button>
     </nav>
@@ -180,7 +180,7 @@
         </p>
 
         <div class="hero-actions">
-          <a class="button button-red" href="/pages/services">Let's Grow Together →</a>
+          <a class="button button-red" href="/pages/grow-together">Let's Grow Together →</a>
           <a class="button button-outline" href="/pages/work">Watch Our Work ◉</a>
         </div>
 
@@ -434,106 +434,6 @@
     </section>
 
     <!-- -----------------------------------------
-         OUR WORK SECTION (#work)
-    ----------------------------------------- -->
-    <section class="section section-red" id="work">
-      <div class="section-heading section-heading-light reveal">
-        <div>
-          <p class="eyebrow"><span class="dot dot-white"></span>Our Work</p>
-          <h2 class="section-title section-title-white">
-            Real Results.
-            <br>
-            Real Impact.
-          </h2>
-        </div>
-
-        <a class="button button-white" href="/pages/work">View All Projects →</a>
-      </div>
-
-      <div class="work-grid">
-        <article class="case-card reveal">
-          <div class="case-visual">
-            <span class="case-badge">E-COMMERCE</span>
-            <picture>
-              <source type="image/avif" srcset="assets/growth-ecommerce-400.avif 400w, assets/growth-ecommerce.avif 800w" sizes="(max-width: 760px) 350px, 380px">
-              <img class="growth-image" src="assets/growth-ecommerce.jpg" width="600" height="450" alt="E-commerce digital marketing visual" loading="lazy" decoding="async">
-            </picture>
-          </div>
-          <strong>+184%</strong>
-          <p>Increase in revenue</p>
-          <a href="#contact">View Case Study →</a>
-        </article>
-
-        <article class="case-card reveal">
-          <div class="case-visual">
-            <span class="case-badge">HEALTHCARE</span>
-            <picture>
-              <source type="image/avif" srcset="assets/growth-healthcare-400.avif 400w, assets/growth-healthcare.avif 800w" sizes="(max-width: 760px) 350px, 380px">
-              <img class="growth-image" src="assets/growth-healthcare.jpg" width="600" height="450" alt="Healthcare digital marketing visual" loading="lazy" decoding="async">
-            </picture>
-          </div>
-          <strong>3.8X</strong>
-          <p>More qualified appointments</p>
-          <a href="#contact">View Case Study →</a>
-        </article>
-
-        <article class="case-card reveal">
-          <div class="case-visual">
-            <span class="case-badge">CONSTRUCTION</span>
-            <picture>
-              <source type="image/avif" srcset="assets/growth-construction-400.avif 400w, assets/growth-construction.avif 800w" sizes="(max-width: 760px) 350px, 380px">
-              <img class="growth-image" src="assets/growth-construction.jpg" width="600" height="450" alt="Construction digital marketing visual" loading="lazy" decoding="async">
-            </picture>
-          </div>
-          <strong>+220%</strong>
-          <p>Qualified lead growth</p>
-          <a href="#contact">View Case Study →</a>
-        </article>
-      </div>
-
-      <div class="section-transition-line" aria-hidden="true">
-        <span></span>
-      </div>
-    </section>
-
-    <!-- -----------------------------------------
-         CAREERS SECTION (#careers)
-    ----------------------------------------- -->
-    <section class="section section-red careers" id="careers">
-      <div class="reveal">
-        <p class="eyebrow"><span class="dot dot-white"></span>Careers</p>
-
-        <h2 class="section-title section-title-white">
-          Come Build
-          <br>
-          Something
-          <br>
-          Unmissable.
-        </h2>
-
-        <div class="content-block content-block-light">
-          <p>
-            Join JYSA Media and help ambitious brands win attention, trust and
-            growth in the digital world.
-          </p>
-        </div>
-
-        <a class="button button-white" href="/pages/careers">View Openings →</a>
-      </div>
-
-      <div class="career-art reveal" aria-hidden="true">
-        <div class="career-bag">
-          <span>JYSA</span>
-          <small>MEDIA</small>
-        </div>
-      </div>
-
-      <div class="section-transition-line" aria-hidden="true">
-        <span></span>
-      </div>
-    </section>
-
-    <!-- -----------------------------------------
          FAQ SECTION (#faq)
     ----------------------------------------- -->
     <section class="section section-white faq-section" id="faq">
@@ -696,7 +596,10 @@
         <input type="text" id="talkModalCompany" name="company" placeholder="Company" maxlength="120" autocomplete="organization" aria-label="Company">
         <label for="talkModalMessage" class="sr-only">How can I help you?</label>
         <textarea id="talkModalMessage" name="message" placeholder="How can I help you?" maxlength="3000" aria-label="How can I help you?"></textarea>
-        <button class="button button-red" type="submit">SEND →</button>
+        <div class="talk-modal-actions">
+          <button class="button button-red" type="submit">SEND →</button>
+          <button class="button button-outline talk-modal-cancel" type="button" data-talk-close>CANCEL</button>
+        </div>
         <p class="talk-modal-note" id="talkModalNote"></p>
       </form>
     </div>

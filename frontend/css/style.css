@@ -1563,6 +1563,12 @@ button {
   border-radius: 28px;
   background: var(--white);
   box-shadow: 0 30px 80px rgba(126, 0, 12, 0.2);
+  transform: translateY(14px) scale(0.98);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.talk-modal.is-open .talk-modal-dialog {
+  transform: translateY(0) scale(1);
 }
 
 .talk-modal-close {
@@ -1577,6 +1583,10 @@ button {
   color: var(--red);
   font-size: 24px;
   line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .talk-modal-email {
@@ -1618,6 +1628,43 @@ button {
 .talk-modal-form textarea {
   min-height: 105px;
   resize: vertical;
+}
+
+.talk-modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.talk-modal-cancel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 24px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid var(--red-line, #f2c5ca);
+  border-radius: var(--radius-full, 9999px);
+  background: transparent;
+  color: #7e3942;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.talk-modal-cancel:hover {
+  background: rgba(227, 19, 36, 0.06);
+  color: var(--red, #e31324);
+  border-color: var(--red, #e31324);
+}
+
+@media (max-width: 480px) {
+  .talk-modal-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 .talk-modal-note {

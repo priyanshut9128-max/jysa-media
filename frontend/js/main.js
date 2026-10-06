@@ -1095,7 +1095,10 @@ function getTalkModalMarkup() {
         <input type="text" id="talkModalCompany" name="company" placeholder="Company" maxlength="120" autocomplete="organization" aria-label="Company">
         <label for="talkModalMessage" class="sr-only">How can I help you?</label>
         <textarea id="talkModalMessage" name="message" placeholder="How can I help you?" maxlength="3000" aria-label="How can I help you?"></textarea>
-        <button class="button button-red" type="submit">SEND →</button>
+        <div class="talk-modal-actions">
+          <button class="button button-red" type="submit">SEND →</button>
+          <button class="button button-outline talk-modal-cancel" type="button" data-talk-close>CANCEL</button>
+        </div>
         <p class="talk-modal-note" id="talkModalNote"></p>
       </form>
     </div>
@@ -1187,12 +1190,18 @@ document.addEventListener("click", (event) => {
   const text = (btn.textContent || "").trim().toUpperCase();
   const href = (btn.getAttribute("href") || "").toLowerCase();
 
+  // Do not intercept navigation to the dedicated Let's Grow Together page
+  if (href.includes("grow-together")) {
+    return;
+  }
+
   if (
     btn.id === "headerTalkButton" ||
     text.includes("LET'S TALK") ||
     text.includes("LET’S TALK") ||
     href.includes("openletstalk") ||
-    href.includes("#letstalk")
+    href === "#letstalk" ||
+    href.endsWith("/#letstalk")
   ) {
     event.preventDefault();
     event.stopPropagation();
@@ -1200,15 +1209,20 @@ document.addEventListener("click", (event) => {
   }
 });
 
-// Auto-open modal if URL has ?openLetsTalk=1 or #letstalk
+// Auto-open modal if URL has ?openLetsTalk=1, #letstalk, or if landing on Let's Grow Together page
 const urlParams = new URLSearchParams(window.location.search);
+const isGrowTogetherPage = window.location.pathname.includes("grow-together");
 if (
   urlParams.get("openLetsTalk") === "1" ||
   urlParams.has("openLetsTalk") ||
-  window.location.hash === "#letstalk"
+  window.location.hash === "#letstalk" ||
+  isGrowTogetherPage
 ) {
   openTalkModal();
 }
+
+window.openTalkModal = openTalkModal;
+window.closeTalkModal = closeTalkModal;
 
 /* ==========================================================================
    8. CONTACT FORM SUBMISSION & BUTTON MICRO-ANIMATION
