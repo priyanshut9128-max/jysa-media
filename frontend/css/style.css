@@ -1702,6 +1702,44 @@ body.talk-modal-open {
 }
 
 /* ---------------------------------------------------------
+   Footer Social Icons
+   --------------------------------------------------------- */
+
+.footer-social {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.footer-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--red-line, rgba(180, 40, 50, 0.2));
+  color: var(--color-text-secondary, #74343b);
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.footer-social a:hover {
+  background: var(--crimson, #b42832);
+  border-color: var(--crimson, #b42832);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.footer-social a svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  display: block;
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------
    Motion
    --------------------------------------------------------- */
 
@@ -2068,6 +2106,10 @@ body.talk-modal-open {
     min-height: 44px;
     padding: 8px 6px;
     font-size: 12px;
+  }
+
+  .footer-social {
+    margin-top: 16px;
   }
 }
 
